@@ -17,6 +17,7 @@
     (lambda (mod)
       (begin
 	      (display "timest_dungeon INIT \n\n")
+        (ywSizeCreate 800 600 mod "window size")
         (ygInitWidgetModule mod "timest_dungeon" (yeCreateFunction "tmst_init"))
         mod
       )
@@ -41,9 +42,10 @@
         (ywSetTurnLengthOverwrite 100000)
         (yeCreateFunction "tmst_action" wid "action")
         ;;(ywCanvasNewTextByStr wid 10 25 "test")
-        ;;(ywCanvasNewHSegment wid 0 60 1000 "rgba: 0 0 0 255")
         (yePushBack wid (ywCanvasNewImg wid 0 0 "cave.jpg" (ywRectCreate 0 0 1000 1000)) "cave")
-        (yePushBack wid (ywCanvasNewImg wid 100 100 "car.png" (ywRectCreate 100 100 100 100)) "car")
+        (yePushBack wid (ywCanvasNewImg wid 200 230 "spritesheets/HeroesHero.png" (ywRectCreate 9 88 36 70)) "hero")
+        (ywCanvasNewHSegment wid 0 300 1000 "rgba: 0 0 0 255")
+        ;;(yePushBack wid (ywCanvasNewImg wid 100 100 "car.png" (ywRectCreate 100 100 100 100)) "car")
       ;; canvas widget, and set a white background
       ;; yaeString is like yeCreateString, but yeCreateString return the string,
       ;; and yae, it's parent
