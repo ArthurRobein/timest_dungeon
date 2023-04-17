@@ -44,6 +44,7 @@
         ;;(ywCanvasNewTextByStr wid 10 25 "test")
         (yePushBack wid (ywCanvasNewImg wid 0 0 "cave.jpg" (ywRectCreate 0 0 1000 1000)) "cave")
         (yePushBack wid (ywCanvasNewImg wid 200 230 "spritesheets/HeroesHero.png" (ywRectCreate 9 88 36 70)) "hero")
+        (yePushBack wid (ywCanvasNewImg wid 550 124 "spritesheets/GreenMonster.png" (ywRectCreate 194 198 171 176)) "monster")
         (ywCanvasNewHSegment wid 0 300 1000 "rgba: 0 0 0 255")
         ;;(yePushBack wid (ywCanvasNewImg wid 100 100 "car.png" (ywRectCreate 100 100 100 100)) "car")
       ;; canvas widget, and set a white background
