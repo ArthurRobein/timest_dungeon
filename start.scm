@@ -24,11 +24,25 @@
     )
   )
 
+  (define get_sprite_pos
+    (lambda (wid room pos)
+      (yeGetInt(yeGet(yeGet(yeGet(yeGet wid "json") room) "sprite-pos") pos))
+    )
+  )
+
   (define tmst_action
     (lambda (wid events)
-      (let ((str "Hello Action\n" ) (fd 2) )
+      (let ((str "Hello Action\n" )
+          (x (get_sprite_pos wid "first" "x"))
+          (y (get_sprite_pos wid "first" "y"))
+          (w (get_sprite_pos wid "first" "w"))
+          (h (get_sprite_pos wid "first" "h"))
+        )
         (begin
           (display str)
+          (yePushBack wid (ywCanvasNewImg wid 550 (- 300 h)
+                      (yeGetString(yeGet(yeGet(yeGet wid "json") "first") "enemy-img"))
+                      (ywRectCreate x y w h)) "monster")
           ;;(ywCanvasMoveObjXY (yeGet wid "car") 1 0)
         )
       )
@@ -44,13 +58,14 @@
         ;;(ywCanvasNewTextByStr wid 10 25 "test")
         (yePushBack wid (ywCanvasNewImg wid 0 0 "cave.jpg" (ywRectCreate 0 0 1000 1000)) "cave")
         (yePushBack wid (ywCanvasNewImg wid 200 230 "spritesheets/HeroesHero.png" (ywRectCreate 9 88 36 70)) "hero")
-        (yePushBack wid (ywCanvasNewImg wid 550 124 "spritesheets/GreenMonster.png" (ywRectCreate 194 198 171 176)) "monster")
+        ;;(yePushBack wid (ywCanvasNewImg wid 550 124 "spritesheets/GreenMonster.png" (ywRectCreate 194 198 171 176)) "monster")
+        (yePushBack wid (ygFileToEnt YJSON "rooms.json") "json")
         (ywCanvasNewHSegment wid 0 300 1000 "rgba: 0 0 0 255")
         ;;(yePushBack wid (ywCanvasNewImg wid 100 100 "car.png" (ywRectCreate 100 100 100 100)) "car")
         ;; canvas widget, and set a white background
         ;; yaeString is like yeCreateString, but yeCreateString return the string,
         ;; and yae, it's parent
-        (yePrint (ygFileToEnt YJSON "rooms.json"))
+        ;;(yePrint yeGet(wid "json"))
         (ywidNewWidget (yaeString "rgba: 255 255 255 255" wid "background") "canvas")
       )
     )
