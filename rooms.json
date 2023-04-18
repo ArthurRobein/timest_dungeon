@@ -1,0 +1,54 @@
+{
+  "first": {
+    "type":"enemy",
+    "back-img": "wall.png",
+    "enemy-img": "truck.png",
+    "stats": {
+      "hp": 10,
+      "atk": 4,
+      "def": 0,
+      "%crit": 10
+      },
+    "nexts": [["compas", "obj"], ["2nd", "end"], ["loop", "trap"]]
+  },
+  "loop": {
+    "type":"enemy",
+    "stats": {
+      "hp": 10,
+      "atk": 4,
+      "def": 0,
+      "%crit": 10
+      },
+    "nexts": [["loop", "trap"]]
+  },
+  "compas": {
+    "type":"tresort",
+    "stats": {
+      "hp": 35,
+      "atk": 5,
+      "def": 3,
+      "%crit": 10
+      },
+    "obj": "compas"
+  },
+  "second": {
+    "type":"enemy",
+    "stats": {
+      "hp": 100,
+      "atk": 4,
+      "def": 6,
+      "%crit": 10
+      },
+    "nexts": [["the end", "boss"]]
+  },
+  "the end": {
+    "type":"enemy",
+    "stats": {
+      "hp": 200,
+      "atk": 35,
+      "def": 30,
+      "%crit": 10
+      },
+    "the end": true
+  }
+}
