@@ -102,6 +102,24 @@
 	      (display "on clock")
 	      )
 
+	  (yePrint (yeGet wid "state"))
+	  (yePrint (yeGet wid "state-a"))
+	  (yeIncrAt wid "state-a")
+	  (if (> (yeGetIntAt wid "state-a") 10)
+	      (begin
+		(yeReCreateInt 0 wid "state-a")
+		(yeIncrAt wid "state")
+		(if (> (yeGetIntAt wid "state") 1)
+		    (yeReCreateInt 0 wid "state")
+		)
+		)
+	      )
+	  (if (= (yeGetIntAt wid "state") 0)
+	      (ywCanvasStringSet (yeGet wid "action-txt") (yeCreateString "the guy attack !!"))
+	      (if (= (yeGetIntAt wid "state") 1)
+		  (ywCanvasStringSet (yeGet wid "action-txt") (yeCreateString "bad guy attack !!!"))
+		  )
+	      )
           (display str)
           (hero_hp_bar wid)
           (monster_hp_bar wid)
@@ -133,6 +151,12 @@
 	(yePushBack wid (ywCanvasNewImg wid 550 (- 300 h)
 					(yeGetString(yeGet(yeGet(yeGet wid "json") "first") "enemy-img"))
 					(ywRectCreate x y w h)) "monster")
+
+	(yePushBack wid (ywCanvasNewTextByStr wid 20 20 "") "action-txt")
+	(ywCanvasSetStrColor (yeGet wid "action-txt") "rgba: 255 255 255 255")
+	(yeCreateInt 0 wid "state")
+	(yeCreateInt 0 wid "state-a")
+	(ywRectCreate 350 400 100 100 wid "clock-rect")
 	(yePushBack wid (ywCanvasNewImg wid 350 400
 					"spritesheets/Clock.png"
 					(ywRectCreate 0 0 100 100)) "clock")
