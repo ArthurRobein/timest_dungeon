@@ -36,18 +36,50 @@
     )
   )
 
+  (define set_stat
+    (lambda (wid room stat value)
+      (yeReCreateInt value (yeGet(yeGet(yeGet wid "json") room) "stats") stat)
+    )
+  )
+
   (define hero_hp_bar
     (lambda (wid)
-      (ywCanvasNewRectangle wid 0 300 100 100 "rgba: 0 0 0 255")
+      (letrec (
+          (max_hp (get_stat wid "hero" "maxhp")) 
+          (hp (get_stat wid "hero" "hp")) 
+        )
+        (begin
+          (ywCanvasNewRectangle wid 176 198 108 16 "rgba: 0 0 0 255")
+          (ywCanvasNewRectangle wid 180 202 (/ 100 (/ max_hp hp)) 8 "rgba: 0 255 0 255")      
+        )
+      )
+    )
+  )
+
+  (define hero_init
+    (lambda (wid)
+      (begin
+       (set_stat wid "hero" "maxhp" 500)
+       (set_stat wid "hero" "hp" 40)
+       (set_stat wid "hero" "atk" 4)
+       (set_stat wid "hero" "def" 2)
+       (set_stat wid "hero" "%crit" 10)
+     )
     )
   )
 
   (define tmst_action
     (lambda (wid events)
-      (let ((str "Hello Action\n" ))
+      (let (
+        (str "Hello Action\n" )
+        (max_hp (get_stat wid "hero" "maxhp"))
+        (hp (get_stat wid "hero" "hp"))        
+        )
         (begin
+          (display max_hp)
+          (display hp)
           (display str)
-          ;;
+          (hero_hp_bar wid)
           ;;(ywCanvasMoveObjXY (yeGet wid "car") 1 0)
         )
       )
@@ -62,19 +94,18 @@
         (y (get_sprite_pos wid "first" "y"))
         (w (get_sprite_pos wid "first" "w"))
         (h (get_sprite_pos wid "first" "h"))
-        (enemy_max_hp (get_stat wid "first" "hp"))
+        (enemy_max_hp (get_stat wid "first" "maxhp"))
         (enemy_atk (get_stat wid "first" "atk"))
         (enemy_def (get_stat wid "first" "def"))
         (enemy_crit (get_stat wid "first" "%crit"))
-        (hp 10)
-        (atk 4)
-        (def 2)
-        (crit 10))
+        )
         (begin
         (display "Hello world\n")
         (ywSetTurnLengthOverwrite 100000)
         (yeCreateFunction "tmst_action" wid "action")
         ;;(ywCanvasNewTextByStr wid 10 25 "test")
+        
+        (hero_init wid)
         (yePushBack wid (ywCanvasNewImg wid 0 0 "cave.jpg" (ywRectCreate 0 0 1000 1000)) "cave")
         (yePushBack wid (ywCanvasNewImg wid 200 230 "spritesheets/HeroesHero.png" (ywRectCreate 9 88 36 70)) "hero")
         (yePushBack wid (ywCanvasNewImg wid 550 (- 300 h)
@@ -84,10 +115,6 @@
                       "spritesheets/Clock.png"
                       (ywRectCreate 0 0 100 100)) "clock")
         (ywCanvasNewHSegment wid 0 300 1000 "rgba: 0 0 0 255")
-        ;;(yePushBack wid (ywCanvasNewImg wid 100 100 "car.png" (ywRectCreate 100 100 100 100)) "car")
-        ;; canvas widget, and set a white background
-        ;; yaeString is like yeCreateString, but yeCreateString return the string,
-        ;; and yae, it's parent
         (ywidNewWidget (yaeString "rgba: 255 255 255 255" wid "background") "canvas")
         )
       )

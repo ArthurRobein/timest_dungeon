@@ -1,4 +1,12 @@
 {
+  "hero": {
+    "stats": {
+      "maxhp": 10,
+      "atk": 4,
+      "def": 0,
+      "%crit": 10
+      }
+  },
   "first": {
     "type":"enemy",
     "back-img": "wall.png",
@@ -10,7 +18,7 @@
       "h": 176
     },
     "stats": {
-      "hp": 10,
+      "maxhp": 10,
       "atk": 4,
       "def": 0,
       "%crit": 10
