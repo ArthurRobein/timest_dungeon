@@ -1,7 +1,7 @@
 {
   "hero": {
     "stats": {
-      "maxhp": 100,
+      "maxhp": 5,
       "atk": 4,
       "def": 0,
       "%crit": 10
