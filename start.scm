@@ -75,18 +75,6 @@
     )
   )
 
-  (define hero_init
-    (lambda (wid)
-      (begin
-       (set_stat wid "hero" "maxhp" 500)
-       (set_stat wid "hero" "hp" (get_stat wid "hero" "maxhp"))
-       (set_stat wid "hero" "atk" 4)
-       (set_stat wid "hero" "def" 2)
-       (set_stat wid "hero" "%crit" 10)
-     )
-    )
-  )
-
   (define tmst_action
     (lambda (wid events)
       (let (
@@ -144,24 +132,23 @@
         (yeCreateFunction "tmst_action" wid "action")
         ;;(ywCanvasNewTextByStr wid 10 25 "test")
         
-        (hero_init wid)
+        (set_stat wid "hero" "hp" (get_stat wid "hero" "maxhp"))
         (set_stat wid "first" "hp" (get_stat wid "first" "maxhp"))
         (display (get_stat wid "first" "maxhp"))
         (yePushBack wid (ywCanvasNewImg wid 0 0 "cave.jpg" (ywRectCreate 0 0 1000 1000)) "cave")
-	(yePushBack wid (ywCanvasNewImg wid 550 (- 300 h)
+	      (yePushBack wid (ywCanvasNewImg wid 550 (- 300 h)
 					(yeGetString(yeGet(yeGet(yeGet wid "json") "first") "enemy-img"))
 					(ywRectCreate x y w h)) "monster")
 
-	(yePushBack wid (ywCanvasNewTextByStr wid 20 20 "") "action-txt")
-	(ywCanvasSetStrColor (yeGet wid "action-txt") "rgba: 255 255 255 255")
-	(yeCreateInt 0 wid "state")
-	(yeCreateInt 0 wid "state-a")
-	(ywRectCreate 350 400 100 100 wid "clock-rect")
-	(yePushBack wid (ywCanvasNewImg wid 350 400
+        (yePushBack wid (ywCanvasNewTextByStr wid 20 20 "") "action-txt")
+        (ywCanvasSetStrColor (yeGet wid "action-txt") "rgba: 255 255 255 255")
+        (yeCreateInt 0 wid "state")
+        (yeCreateInt 0 wid "state-a")
+        (ywRectCreate 350 400 100 100 wid "clock-rect")
+        (yePushBack wid (ywCanvasNewImg wid 350 400
 					"spritesheets/Clock.png"
 					(ywRectCreate 0 0 100 100)) "clock")
         (yePushBack wid (ywCanvasNewImg wid 200 230 "spritesheets/HeroesHero.png" (ywRectCreate 9 88 36 70)) "hero")
-        (yePushBack wid (ygFileToEnt YJSON "rooms.json") "json")
         (ywCanvasNewHSegment wid 0 300 1000 "rgba: 0 0 0 255")
         (ywidNewWidget (yaeString "rgba: 255 255 255 255" wid "background") "canvas")
         )
