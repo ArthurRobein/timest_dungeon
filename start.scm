@@ -96,7 +96,7 @@
     )
   )
 
-  (define tmst_action
+  (define combat_action
     (lambda (wid events)
       (let (
         (str "Hello Action\n" )
@@ -104,6 +104,9 @@
         (hp (get_stat wid "hero" "hp"))        
         )
         (begin
+	  (if (= (yeGetIntAt wid "state") 4) (ywCanvasStringSet (yeGet wid "dead-txt")
+								(yeCreateString "DEAD !!!! !!")))
+
 	  (if (and
 	       (yevAnyMouseDown events)
 	       (ywRectContain (yeGet wid "clock-rect") (yeveMouseX) (yeveMouseY))
@@ -122,12 +125,12 @@
 	      (begin
 		(if (= (yeGetIntAt wid "state") 0)
 		    (begin
-		      (add_stat wid "hero" "hp"  (- (get_stat wid "first" "atk")))
+		      (add_stat wid "first" "hp"  (- (get_stat wid "hero" "atk")))
 		      (yeReCreateInt (get_stat wid "hero" "atk") wid "dmg-deal"))
 		    )
-		(if (= (yeGetIntAt wid "state") 0)
+		(if (= (yeGetIntAt wid "state") 2)
 		    (begin
-		      (add_stat wid "first" "hp"  (- (get_stat wid "hero" "atk")))
+		      (add_stat wid "hero" "hp"  (- (get_stat wid "first" "atk")))
 		      (yeReCreateInt (get_stat wid "first" "atk") wid "dmg-deal")
 		      )
 		    )
@@ -141,7 +144,8 @@
 		(yeIncrAt wid "state")
 		(if (> (yeGetIntAt wid "state") 3)
 		    (yeReCreateInt 0 wid "state")
-		)
+		    )
+		(if (< (get_stat wid "hero" "hp") 1) (yeReCreateInt 4 wid "state"))
 		)
 	      )
 	  (if (= (yeGetIntAt wid "state") 0)
@@ -162,6 +166,17 @@
       )
     )
   )
+
+  (define tmst_action
+    (lambda (wid events)
+      (if (= (yeGetIntAt wid "state") 4) (begin
+					   (ywCanvasStringSet (yeGet wid "dead-txt")
+							      (yeCreateString "DEAD !!!! !!"))
+					   (ywCanvasStringSet (yeGet wid "action-txt") (yeCreateString ""))
+					   )
+	  (combat_action wid events))
+      )
+    )
 
   (define tmst_init
     (lambda (wid unues_type)
@@ -186,6 +201,8 @@
 					(yeGetString(yeGet(yeGet(yeGet wid "json") "first") "enemy-img"))
 					(ywRectCreate x y w h)) "monster")
 
+        (yePushBack wid (ywCanvasNewTextByStr wid 30 30 "") "dead-txt")
+        (ywCanvasSetStrColor (yeGet wid "dead-txt") "rgba: 255 255 255 255")
         (yePushBack wid (ywCanvasNewRectangle wid 20 390 200 170 "rgba: 0 0 0 100") "stat-background")
 
         (yePushBack wid (ywCanvasNewTextByStr wid 30 20 "") "action-txt")
