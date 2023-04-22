@@ -100,7 +100,10 @@
 
 	  (yePrint (yeGet wid "state"))
 	  (yePrint (yeGet wid "state-a"))
-		(ywCanvasStringSet (yeGet wid "hp-stat-txt") (yeCreateString (get_stat wid "hero" "hp")))
+		(ywCanvasStringSet (yeGet wid "hp-stat-txt") (yeStringAddInt (yeCreateString "Health: ") (get_stat wid "hero" "hp")))
+		(ywCanvasStringSet (yeGet wid "atk-stat-txt") (yeStringAddInt (yeCreateString "Attack: ") (get_stat wid "hero" "atk")))
+		(ywCanvasStringSet (yeGet wid "def-stat-txt") (yeStringAddInt (yeCreateString "Defense: ") (get_stat wid "hero" "def")))
+		(ywCanvasStringSet (yeGet wid "crit-stat-txt") (yeStringAddInt (yeCreateString "Crit rate: ") (get_stat wid "hero" "crit")))
 
 	  (if (= (yeGetIntAt wid "state-a") 5)
 	      (begin
@@ -170,13 +173,20 @@
 					(yeGetString(yeGet(yeGet(yeGet wid "json") "first") "enemy-img"))
 					(ywRectCreate x y w h)) "monster")
 
-        (yePushBack wid (ywCanvasNewTextByStr wid 20 20 "") "action-txt")
-        (yePushBack wid (ywCanvasNewTextByStr wid 400 20 "") "hp-stat-txt")
-        (yePushBack wid (ywCanvasNewTextByStr wid 430 20 "") "atk-stat-txt")
-        (yePushBack wid (ywCanvasNewTextByStr wid 490 20 "") "def-stat-txt")
-        (yePushBack wid (ywCanvasNewTextByStr wid 510 20 "") "crit-stat-txt")
+        (yePushBack wid (ywCanvasNewRectangle wid 20 390 200 170 "rgba: 0 0 0 100") "stat-background")
+
+        (yePushBack wid (ywCanvasNewTextByStr wid 30 20 "") "action-txt")
+        (yePushBack wid (ywCanvasNewTextByStr wid 30 400 "") "hp-stat-txt")
+        (yePushBack wid (ywCanvasNewTextByStr wid 30 430 "") "atk-stat-txt")
+        (yePushBack wid (ywCanvasNewTextByStr wid 30 460 "") "def-stat-txt")
+        (yePushBack wid (ywCanvasNewTextByStr wid 30 490 "") "crit-stat-txt")
         
         (ywCanvasSetStrColor (yeGet wid "action-txt") "rgba: 255 255 255 255")
+        (ywCanvasSetStrColor (yeGet wid "hp-stat-txt") "rgba: 255 255 255 255")
+        (ywCanvasSetStrColor (yeGet wid "atk-stat-txt") "rgba: 255 255 255 255")
+        (ywCanvasSetStrColor (yeGet wid "def-stat-txt") "rgba: 255 255 255 255")
+        (ywCanvasSetStrColor (yeGet wid "crit-stat-txt") "rgba: 255 255 255 255")
+
         (yeCreateInt 0 wid "state")
         (yeCreateInt 0 wid "state-a")
         (ywRectCreate 350 400 100 100 wid "clock-rect")
