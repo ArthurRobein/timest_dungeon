@@ -83,6 +83,12 @@
         (yeCreateFunction "tmst_action" wid "action")
         ;;(ywCanvasNewTextByStr wid 10 25 "test")
         (yePushBack wid (ywCanvasNewImg wid 0 0 "cave.jpg" (ywRectCreate 0 0 1000 1000)) "cave")
+	(yePushBack wid (ywCanvasNewImg wid 550 (- 300 h)
+					(yeGetString(yeGet(yeGet(yeGet wid "json") "first") "enemy-img"))
+					(ywRectCreate x y w h)) "monster")
+	(yePushBack wid (ywCanvasNewImg wid 350 400
+					"spritesheets/Clock.png"
+					(ywRectCreate 0 0 100 100)) "clock")
         (yePushBack wid (ywCanvasNewImg wid 200 230 "spritesheets/HeroesHero.png" (ywRectCreate 9 88 36 70)) "hero")
         (yePushBack wid (ygFileToEnt YJSON "rooms.json") "json")
         (ywCanvasNewHSegment wid 0 300 1000 "rgba: 0 0 0 255")
