@@ -68,7 +68,7 @@
   
   (define monster_hp_bar
     (lambda (wid)
-      (letrec (
+      (let (
           (maxhp (get_stat wid "first" "maxhp")) 
           (hp (get_stat wid "first" "hp")) 
         )
@@ -79,6 +79,19 @@
           (yePushBack wid (ywCanvasNewRectangle wid 548 98 108 16 "rgba: 0 0 0 255") "monster_bar_back")
           (yePushBack wid (ywCanvasNewRectangle wid 552 102 (/ 100 (/ maxhp hp)) 8 "rgba: 0 255 0 255") "monster_bar_front")      
         )
+      )
+    )
+  )
+
+  (define add_reminiscence
+    (lambda (wid)
+      (let (
+        (x (modulo (yuiRand) 200))
+        (y (modulo (yuiRand) 200))
+      )
+      (begin
+        (yePushBack wid (ywCanvasNewImg wid (+ 100 x) (+ 100 y) "spritesheets/HeroesHero.png" (ywRectCreate 9 88 36 70)) "remi")
+      )
       )
     )
   )
@@ -186,6 +199,8 @@
         (ywCanvasSetStrColor (yeGet wid "atk-stat-txt") "rgba: 255 255 255 255")
         (ywCanvasSetStrColor (yeGet wid "def-stat-txt") "rgba: 255 255 255 255")
         (ywCanvasSetStrColor (yeGet wid "crit-stat-txt") "rgba: 255 255 255 255")
+
+        (add_reminiscence wid)
 
         (yeCreateInt 0 wid "state")
         (yeCreateInt 0 wid "state-a")
