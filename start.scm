@@ -42,6 +42,12 @@
     )
   )
 
+  (define add_stat
+    (lambda (wid room stat value)
+      (yeAddAt (yeGet(yeGet(yeGet wid "json") room) "stats") stat value)
+      )
+    )
+
   (define hero_hp_bar
     (lambda (wid)
       (let (
@@ -52,7 +58,9 @@
           (ywCanvasRemoveObj wid (yeGet wid "hero_bar_back"))
           (ywCanvasRemoveObj wid (yeGet wid "hero_bar_front"))
           (yePushBack wid (ywCanvasNewRectangle wid 176 198 108 16 "rgba: 0 0 0 255") "hero_bar_back")
-          (yePushBack wid (ywCanvasNewRectangle wid 180 202 (/ 100 (/ maxhp hp)) 8 "rgba: 0 255 0 255") "hero_bar_front")    
+          (yePushBack wid (ywCanvasNewRectangle wid 180 202 (round (/ 100 (/ maxhp hp))) 8 "rgba: 0 255 0 255") "hero_bar_front")
+	  (display (/ 100 (/ maxhp hp)))
+	  (display " <- bar l\n")
         )
       )
     )
@@ -104,7 +112,19 @@
 
 	  (yePrint (yeGet wid "state"))
 	  (yePrint (yeGet wid "state-a"))
+	  (if (= (yeGetIntAt wid "state-a") 5)
+	      (begin
+		(if (= (yeGetIntAt wid "state") 0)
+		    (add_stat wid "hero" "hp"  (- (get_stat wid "first" "atk")))
+		    )
+		(if (= (yeGetIntAt wid "state") 0)
+		    (add_stat wid "first" "hp"  (- (get_stat wid "hero" "atk")))
+		    )
+
+		)
+	      )
 	  (yeIncrAt wid "state-a")
+	  (yePrint (yeGet(yeGet(yeGet wid "json") "hero") "stats"))
 	  (if (> (yeGetIntAt wid "state-a") 10)
 	      (begin
 		(yeReCreateInt 0 wid "state-a")
