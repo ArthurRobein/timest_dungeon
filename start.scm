@@ -100,6 +100,8 @@
 
 	  (yePrint (yeGet wid "state"))
 	  (yePrint (yeGet wid "state-a"))
+		(ywCanvasStringSet (yeGet wid "hp-stat-txt") (yeCreateString (get_stat wid "hero" "hp")))
+
 	  (if (= (yeGetIntAt wid "state-a") 5)
 	      (begin
 		(if (= (yeGetIntAt wid "state") 0)
@@ -163,6 +165,11 @@
 					(ywRectCreate x y w h)) "monster")
 
         (yePushBack wid (ywCanvasNewTextByStr wid 20 20 "") "action-txt")
+        (yePushBack wid (ywCanvasNewTextByStr wid 400 20 "") "hp-stat-txt")
+        (yePushBack wid (ywCanvasNewTextByStr wid 430 20 "") "atk-stat-txt")
+        (yePushBack wid (ywCanvasNewTextByStr wid 490 20 "") "def-stat-txt")
+        (yePushBack wid (ywCanvasNewTextByStr wid 510 20 "") "crit-stat-txt")
+        
         (ywCanvasSetStrColor (yeGet wid "action-txt") "rgba: 255 255 255 255")
         (yeCreateInt 0 wid "state")
         (yeCreateInt 0 wid "state-a")
