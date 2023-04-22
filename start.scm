@@ -44,13 +44,32 @@
 
   (define hero_hp_bar
     (lambda (wid)
-      (letrec (
-          (max_hp (get_stat wid "hero" "maxhp")) 
+      (let (
+          (maxhp (get_stat wid "hero" "maxhp")) 
           (hp (get_stat wid "hero" "hp")) 
         )
         (begin
-          (ywCanvasNewRectangle wid 176 198 108 16 "rgba: 0 0 0 255")
-          (ywCanvasNewRectangle wid 180 202 (/ 100 (/ max_hp hp)) 8 "rgba: 0 255 0 255")      
+          (ywCanvasRemoveObj wid (yeGet wid "hero_bar_back"))
+          (ywCanvasRemoveObj wid (yeGet wid "hero_bar_front"))
+          (yePushBack wid (ywCanvasNewRectangle wid 176 198 108 16 "rgba: 0 0 0 255") "hero_bar_back")
+          (yePushBack wid (ywCanvasNewRectangle wid 180 202 (/ 100 (/ maxhp hp)) 8 "rgba: 0 255 0 255") "hero_bar_front")    
+        )
+      )
+    )
+  )  
+  
+  (define monster_hp_bar
+    (lambda (wid)
+      (letrec (
+          (maxhp (get_stat wid "first" "maxhp")) 
+          (hp (get_stat wid "first" "hp")) 
+        )
+        (begin
+
+          (ywCanvasRemoveObj wid (yeGet wid "monster_bar_back"))
+          (ywCanvasRemoveObj wid (yeGet wid "monster_bar_front"))
+          (yePushBack wid (ywCanvasNewRectangle wid 548 98 108 16 "rgba: 0 0 0 255") "monster_bar_back")
+          (yePushBack wid (ywCanvasNewRectangle wid 552 102 (/ 100 (/ maxhp hp)) 8 "rgba: 0 255 0 255") "monster_bar_front")      
         )
       )
     )
@@ -60,7 +79,7 @@
     (lambda (wid)
       (begin
        (set_stat wid "hero" "maxhp" 500)
-       (set_stat wid "hero" "hp" 40)
+       (set_stat wid "hero" "hp" (get_stat wid "hero" "maxhp"))
        (set_stat wid "hero" "atk" 4)
        (set_stat wid "hero" "def" 2)
        (set_stat wid "hero" "%crit" 10)
@@ -72,7 +91,7 @@
     (lambda (wid events)
       (let (
         (str "Hello Action\n" )
-        (max_hp (get_stat wid "hero" "maxhp"))
+        (maxhp (get_stat wid "hero" "maxhp"))
         (hp (get_stat wid "hero" "hp"))        
         )
         (begin
@@ -85,6 +104,7 @@
 
           (display str)
           (hero_hp_bar wid)
+          (monster_hp_bar wid)
           ;;(ywCanvasMoveObjXY (yeGet wid "car") 1 0)
         )
       )
@@ -99,10 +119,6 @@
         (y (get_sprite_pos wid "first" "y"))
         (w (get_sprite_pos wid "first" "w"))
         (h (get_sprite_pos wid "first" "h"))
-        (enemy_max_hp (get_stat wid "first" "maxhp"))
-        (enemy_atk (get_stat wid "first" "atk"))
-        (enemy_def (get_stat wid "first" "def"))
-        (enemy_crit (get_stat wid "first" "%crit"))
         )
         (begin
         (display "Hello world\n")
@@ -111,6 +127,8 @@
         ;;(ywCanvasNewTextByStr wid 10 25 "test")
         
         (hero_init wid)
+        (set_stat wid "first" "hp" (get_stat wid "first" "maxhp"))
+        (display (get_stat wid "first" "maxhp"))
         (yePushBack wid (ywCanvasNewImg wid 0 0 "cave.jpg" (ywRectCreate 0 0 1000 1000)) "cave")
 	(yePushBack wid (ywCanvasNewImg wid 550 (- 300 h)
 					(yeGetString(yeGet(yeGet(yeGet wid "json") "first") "enemy-img"))
@@ -121,11 +139,6 @@
         (yePushBack wid (ywCanvasNewImg wid 200 230 "spritesheets/HeroesHero.png" (ywRectCreate 9 88 36 70)) "hero")
         (yePushBack wid (ygFileToEnt YJSON "rooms.json") "json")
         (ywCanvasNewHSegment wid 0 300 1000 "rgba: 0 0 0 255")
-        (ywCanvasNewRectangle wid 0 300 100 100 "rgba: 0 0 0 255")
-        ;;(yePushBack wid (ywCanvasNewImg wid 100 100 "car.png" (ywRectCreate 100 100 100 100)) "car")
-        ;; canvas widget, and set a white background
-        ;; yaeString is like yeCreateString, but yeCreateString return the string,
-        ;; and yae, it's parent
         (ywidNewWidget (yaeString "rgba: 255 255 255 255" wid "background") "canvas")
         )
       )
