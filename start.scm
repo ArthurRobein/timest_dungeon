@@ -109,12 +109,12 @@
 	      (begin
 		(if (= (yeGetIntAt wid "state") 0)
 		    (begin
-		      (add_stat wid "hero" "hp"  (- (get_stat wid "first" "atk")))
+		      (add_stat wid "first" "hp"  (- (get_stat wid "hero" "atk")))
 		      (yeReCreateInt (get_stat wid "hero" "atk") wid "dmg-deal"))
 		    )
-		(if (= (yeGetIntAt wid "state") 0)
+		(if (= (yeGetIntAt wid "state") 2)
 		    (begin
-		      (add_stat wid "first" "hp"  (- (get_stat wid "hero" "atk")))
+		      (add_stat wid "hero" "hp"  (- (get_stat wid "first" "atk")))
 		      (yeReCreateInt (get_stat wid "first" "atk") wid "dmg-deal")
 		      )
 		    )
