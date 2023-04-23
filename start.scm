@@ -212,8 +212,7 @@
   (define dead_action
     (lambda (wid events)
       (begin
-        (ywCanvasStringSet (yeGet wid "dead-txt")
-                           (yeCreateString "DEAD !!!! !!"))
+        (ywCanvasStringSet (yeGet wid "dead-txt") (yeCreateString "DEAD !!!! !!"))
         (ywCanvasStringSet (yeGet wid "action-txt") (yeCreateString ""))
         )
       )
