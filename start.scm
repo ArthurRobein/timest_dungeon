@@ -173,7 +173,6 @@
           (yeIncrAt wid "state-a")
           (yeIncrAt wid "cur_cooldown")
           (yeIntForceBound (yeGet wid "cur_cooldown") 0 NB_TURN_COOLDOWN)
-                                        ;(yePrint (yeGet(yeGet(yeGet wid "json") "hero") "stats"))
           (if (> (yeGetIntAt wid "state-a") STATE_TURN_L)
               (begin
                 (yeReCreateInt 0 wid "state-a")
@@ -199,12 +198,14 @@
               (begin
                 (ywCanvasStringSet (yeGet wid "action-txt") (yeCreateString "bad guy attack !!!"))
                 (ywCanvasRemoveObj wid (yeGet wid "hero"))
+                (ywCanvasMoveObjXY (yeGet wid "monster") -5 0)
                 (yeReplaceBack wid (ywCanvasNewImg wid 200 230 "spritesheets/Hero_hurt.png" (ywRectCreate 7 27 46 59)) "hero")))
           (if (= (yeGetIntAt wid "state") STATE_ENEMY_END_ATK)
               (begin
                 (ywCanvasStringSet (yeGet wid "action-txt") (yeStringAddInt (yeCreateString "bad guy deal")
                                                                             (yeGetIntAt wid "dmg-deal")))
                 (ywCanvasRemoveObj wid (yeGet wid "hero"))
+                (ywCanvasMoveObjXY (yeGet wid "monster") 5 0)
                 (yeReplaceBack wid (ywCanvasNewImg wid 200 230 "spritesheets/Hero_idle.png" (ywRectCreate 26 22 43 63)) "hero")))
           (hero_hp_bar wid)
           (monster_hp_bar wid)
