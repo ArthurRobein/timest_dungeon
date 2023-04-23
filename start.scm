@@ -19,6 +19,7 @@
   (define STATE_ENEMY_ATK 2)
   (define STATE_ENEMY_END_ATK 3)
   (define STATE_PJ_DEAD 4)
+  (define STATE_ENEMY_DEAD 5)
 
   (define NB_TURN_COOLDOWN 30)
   (define STATE_TURN_L 10)
@@ -28,7 +29,7 @@
   (define mod_init
     (lambda (mod)
       (begin
-	      (display "timest_dungeon INIT \n\n")
+	(display "timest_dungeon INIT \n\n")
         (ywSizeCreate 800 600 mod "window size")
         (ygInitWidgetModule mod "timest_dungeon" (yeCreateFunction "tmst_init"))
         mod
@@ -85,9 +86,11 @@
           (ywCanvasRemoveObj wid (yeGet wid "hero_bar_back"))
           (ywCanvasRemoveObj wid (yeGet wid "hero_bar_front"))
           (yeReplaceBack wid (ywCanvasNewRectangle wid 176 198 108 16 "rgba: 0 0 0 255") "hero_bar_back")
-          (yeReplaceBack wid (ywCanvasNewRectangle wid 180 202 (round (/ 100 (/ maxhp hp))) 8 "rgba: 0 255 0 255") "hero_bar_front")
-	        (display (/ 100 (/ maxhp hp)))
-	        (display " <- bar l\n")
+	  (if (and (> (round hp) 0)  (> (/ maxhp hp) 0))
+              (yeReplaceBack wid (ywCanvasNewRectangle wid 180 202 (round (/ 100 (/ maxhp hp))) 8 "rgba: 0 255 0 255") "hero_bar_front")
+	      )
+	  ;(display (/ 100 (/ maxhp hp)))
+	  (display " <- bar l\n")
         )
       )
     )
@@ -104,7 +107,8 @@
           (ywCanvasRemoveObj wid (yeGet wid "monster_bar_back"))
           (ywCanvasRemoveObj wid (yeGet wid "monster_bar_front"))
           (yeReplaceBack wid (ywCanvasNewRectangle wid 548 98 108 16 "rgba: 0 0 0 255") "monster_bar_back")
-          (yeReplaceBack wid (ywCanvasNewRectangle wid 552 102 (/ 100 (/ maxhp hp)) 8 "rgba: 0 255 0 255") "monster_bar_front")      
+	  (if (and (> (round hp) 0)  (> (/ maxhp hp) 0))
+              (yeReplaceBack wid (ywCanvasNewRectangle wid 552 102 (/ 100 (/ maxhp hp)) 8 "rgba: 0 255 0 255") "monster_bar_front"))
         )
       )
     )
@@ -130,9 +134,6 @@
         (hp (get_stat wid "hero" "hp"))        
         )
         (begin
-	  (if (= (yeGetIntAt wid "state") STATE_PJ_DEAD) (ywCanvasStringSet (yeGet wid "dead-txt")
-								(yeCreateString "DEAD !!!! !!")))
-
 	  (if (and
 	       (yevAnyMouseDown events)
 	       (ywRectContain (yeGet wid "clock-rect") (yeveMouseX) (yeveMouseY))
@@ -186,10 +187,10 @@
 	  (if (= (yeGetIntAt wid "state") STATE_ENEMY_END_ATK)
 	      (ywCanvasStringSet (yeGet wid "action-txt") (yeStringAddInt (yeCreateString "bad guy deal")
 									  (yeGetIntAt wid "dmg-deal"))))
-	      )
-          (hero_hp_bar wid)
-          (monster_hp_bar wid)
-          (cooldown_reset_bar wid)
+	  )
+	  (hero_hp_bar wid)
+	  (monster_hp_bar wid)
+	  (cooldown_reset_bar wid)
         )
       )
     )
@@ -197,7 +198,7 @@
 
   (define tmst_action
     (lambda (wid events)
-      (if (= (yeGetIntAt wid "state") 4) (begin
+      (if (= (yeGetIntAt wid "state") STATE_PJ_DEAD) (begin
 					   (ywCanvasStringSet (yeGet wid "dead-txt")
 							      (yeCreateString "DEAD !!!! !!"))
 					   (ywCanvasStringSet (yeGet wid "action-txt") (yeCreateString ""))
