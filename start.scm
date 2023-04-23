@@ -96,8 +96,8 @@
   (define monster_hp_bar
     (lambda (wid)
       (let (
-          (maxhp (get_stat wid "first" "maxhp")) 
-          (hp (get_stat wid "first" "hp")) 
+          (maxhp (get_stat wid (yeGetStringAt wid "cur_room") "maxhp")) 
+          (hp (get_stat wid (yeGetStringAt wid "cur_room") "hp")) 
         )
         (begin
 
@@ -151,13 +151,13 @@
 	      (begin
 		(if (= (yeGetIntAt wid "state") STATE_PJ_ATK)
 		    (begin
-		      (add_stat wid "first" "hp"  (- (get_stat wid "hero" "atk")))
+		      (add_stat wid (yeGetStringAt wid "cur_room") "hp"  (- (get_stat wid "hero" "atk")))
 		      (yeReCreateInt (get_stat wid "hero" "atk") wid "dmg-deal"))
 		    )
 		(if (= (yeGetIntAt wid "state") STATE_ENEMY_ATK)
 		    (begin
-		      (add_stat wid "hero" "hp"  (- (get_stat wid "first" "atk")))
-		      (yeReCreateInt (get_stat wid "first" "atk") wid "dmg-deal")
+		      (add_stat wid "hero" "hp"  (- (get_stat wid (yeGetStringAt wid "cur_room") "atk")))
+		      (yeReCreateInt (get_stat wid (yeGetStringAt wid "cur_room") "atk") wid "dmg-deal")
 		      )
 		    )
 		)
@@ -210,10 +210,11 @@
     (lambda (wid unues_type)
       (let
         ((unused (yePushBack wid (ygFileToEnt YJSON "rooms.json") "json"))
-        (x (get_sprite_pos wid "first" "x"))
-        (y (get_sprite_pos wid "first" "y"))
-        (w (get_sprite_pos wid "first" "w"))
-        (h (get_sprite_pos wid "first" "h"))
+	 (first_room (yeReCreateString "first" wid "cur_room"))
+         (x (get_sprite_pos wid (yeGetStringAt wid "cur_room") "x"))
+         (y (get_sprite_pos wid (yeGetStringAt wid "cur_room") "y"))
+         (w (get_sprite_pos wid (yeGetStringAt wid "cur_room") "w"))
+         (h (get_sprite_pos wid (yeGetStringAt wid "cur_room") "h"))
         )
         (begin
         (display "Hello world\n")
@@ -222,12 +223,21 @@
         ;;(ywCanvasNewTextByStr wid 10 25 "test")
 
 	(yeReCreateInt 1 wid "cur_cooldown")
-        (set_stat wid "hero" "hp" (get_stat wid "hero" "maxhp"))
-        (set_stat wid "first" "hp" (get_stat wid "first" "maxhp"))
-        (display (get_stat wid "first" "maxhp"))
+	;; yeForeach take at first elem, array entity, 2nd a scheme function
+	;; and a thrid optional argument (not use, nor send here)
+	;; third argument is return by yeForeach (so nil here)
+	(yeForeach (yeGet wid "json")
+		   (lambda (room _unuesed)
+		     (yeReCreateInt
+		      (yeGetIntAt (yeGet  room "stats") "maxhp")
+		      (yeGet room "stats")
+		      "hp")
+		     )
+		   )
+
         (yePushBack wid (ywCanvasNewImg wid 0 0 "cave.jpg" (ywRectCreate 0 0 1000 1000)) "cave")
 	      (yePushBack wid (ywCanvasNewImg wid 550 (- 300 h)
-					(yeGetString(yeGet(yeGet(yeGet wid "json") "first") "enemy-img"))
+					(yeGetString(yeGet(yeGet(yeGet wid "json") (yeGetStringAt wid "cur_room")) "enemy-img"))
 					(ywRectCreate x y w h)) "monster")
 
         (yePushBack wid (ywCanvasNewTextByStr wid 30 30 "") "dead-txt")
