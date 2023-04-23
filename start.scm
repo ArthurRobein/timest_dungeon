@@ -87,11 +87,6 @@
   (define add_stat
     (lambda (wid room stat value)
       (begin
-        (display "remove ")
-        (display value)
-        (display "to ")
-        (display (yeGetIntAt (yeGet(yeGet(yeGet wid "json") room) "stats") stat))
-        (display "\n")
         (yeAddAt (yeGet(yeGet(yeGet wid "json") room) "stats") stat value))
       )
     )
@@ -99,8 +94,8 @@
 
   (define cooldown_reset_bar
     (lambda (wid)
-      (ywCanvasRemoveObj wid (yeGet wid "cool_bar_back"))
       (ywCanvasRemoveObj wid (yeGet wid "cool_bar_front"))
+      (ywCanvasRemoveObj wid (yeGet wid "cool_bar_back"))
       (yeReplaceBack wid (ywCanvasNewRectangle wid 600 20 108 16 "rgba: 0 0 0 255") "cool_bar_back")
       (yeReplaceBack wid (ywCanvasNewRectangle wid 604 24
                                                (round (/ (* (yeGetIntAt wid "cur_cooldown") 100) NB_TURN_COOLDOWN)
@@ -118,8 +113,8 @@
             (hp (get_stat wid "hero" "hp"))
             )
         (begin
-          (ywCanvasRemoveObj wid (yeGet wid "hero_bar_back"))
           (ywCanvasRemoveObj wid (yeGet wid "hero_bar_front"))
+          (ywCanvasRemoveObj wid (yeGet wid "hero_bar_back"))
           (yeReplaceBack wid (ywCanvasNewRectangle wid 176 198 108 16 "rgba: 0 0 0 255") "hero_bar_back")
           (if (> hp 0)
               (yeReplaceBack wid (ywCanvasNewRectangle wid 180 202 (round (/ 100 (/ maxhp hp))) 8 "rgba: 0 255 0 255") "hero_bar_front")
@@ -251,11 +246,19 @@
 
   (define choose_3_rooms
     (lambda (wid events)
-      (begin
-	(rm_obj wid "win-rect")
-	(rm_obj wid "win-text")
-        (display "choose between 3 rooms\n")
-        )
+      (display "choose between 3 rooms\n")
+      (repush_obj wid "choose-rect-0"
+		  (ywCanvasNewRectangle wid 5 5 260 290 "rgba: 230 230 230 200"))
+      (ywCanvasStringSet (yeGet wid "choose-txt-0") (yeCreateString "room 0"))
+      (ywCanvasSetWeight wid (yeGet wid "choose-txt-0") 10)
+      (repush_obj wid "choose-rect-1"
+		  (ywCanvasNewRectangle wid 270 5 260 290 "rgba: 230 230 230 200"))
+      (ywCanvasStringSet (yeGet wid "choose-txt-1") (yeCreateString "room 1"))
+      (ywCanvasSetWeight wid (yeGet wid "choose-txt-1") 10)
+      (repush_obj wid "choose-rect-2"
+		  (ywCanvasNewRectangle wid 535 5 260 290 "rgba: 230 230 230 200"))
+      (ywCanvasStringSet (yeGet wid "choose-txt-2") (yeCreateString "room 2"))
+      (ywCanvasSetWeight wid (yeGet wid "choose-txt-2") 10)
       )
     )
 
@@ -300,7 +303,13 @@
 					     )
 			    )
 		)
-	      (if (= 3 next_l) (choose_3_rooms wid events)))
+	      (begin
+		(rm_obj wid "win-rect")
+		(rm_obj wid "win-text")
+		(if (= 3 next_l) (choose_3_rooms wid events)
+		    (display "odd number of ROOM !!!!"))
+		)
+	      )
           )
         )
       )
@@ -399,12 +408,18 @@
           (ywCanvasSetStrColor (yeGet wid "def-stat-txt") "rgba: 255 255 255 255")
           (ywCanvasSetStrColor (yeGet wid "crit-stat-txt") "rgba: 255 255 255 255")
 
+
+          (yePushBack wid (ywCanvasNewTextByStr wid 20 20 "") "choose-txt-0")
+          (yePushBack wid (ywCanvasNewTextByStr wid 290 20 "") "choose-txt-1")
+          (yePushBack wid (ywCanvasNewTextByStr wid 560 20 "") "choose-txt-2")
+
           (ywRectCreate 350 400 100 100 wid "clock-rect")
           (yePushBack wid (ywCanvasNewImg wid 350 400
                                           "spritesheets/Clock.png"
                                           (ywRectCreate 0 0 100 100)) "clock")
           (yePushBack wid (ywCanvasNewImg wid 200 230 "spritesheets/Hero_idle.png" (ywRectCreate 26 22 43 63)) "hero")
           (ywCanvasNewHSegment wid 0 300 1000 "rgba: 0 0 0 255")
+          (yeCreateInt 1 wid "have_weight")
           (ywidNewWidget (yaeString "rgba: 255 255 255 255" wid "background") "canvas")
           )
         )
