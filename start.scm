@@ -218,9 +218,9 @@
       )
     )
 
-  (define dead_enemy_action
+  (define reset_action
     (lambda (wid events)
-      (display "dead_enemy_action\n")
+      (display "reset_action\n")
       )
     )
 
@@ -232,7 +232,7 @@
       )
     )
 
-  (define reset_action
+  (define dead_enemy_action
     (lambda (wid events)
       (let (
             (next_l (yeLen (yeGet (get_cur_room wid) "nexts")))
@@ -240,7 +240,7 @@
         (begin
           (yePrint (yeGet (get_cur_room wid) "nexts"))
           (display next_l)
-          (display "reset_action\n")
+	  (display "dead_enemy_action\n")
           )
         )
       )
