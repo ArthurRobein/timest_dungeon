@@ -247,12 +247,6 @@
       )
     )
 
-  (define reset_action
-    (lambda (wid events)
-      (display "reset_action\n")
-      )
-    )
-
   (define choose_3_rooms
     (lambda (wid events)
       (begin
@@ -310,6 +304,30 @@
       )
     )
 
+  (define init_room
+    (lambda (wid)
+      (yeForeach (yeGet wid "json")
+        (lambda (room _unused)
+          (yeReCreateInt
+          (yeGetIntAt (yeGet  room "stats") "maxhp")
+          (yeGet room "stats")
+          "hp")
+        )
+      )
+      (yeReCreateInt 0 wid "state")
+      (yeReCreateInt 0 wid "state-a")
+      (yeReCreateInt 1 wid "cur_cooldown")
+    )
+  )
+
+  (define reset_action
+    (lambda (wid events)
+      (display "reset_action\n")
+      (add_reminiscence wid)
+      (init_room wid)
+      )
+    )
+
   (define tmst_action
     (lambda (wid events)
       (reprint_stats wid)
@@ -340,31 +358,23 @@
   (define tmst_init
     (lambda (wid unues_type)
       (let
-          ((unused (yePushBack wid (ygFileToEnt YJSON "rooms.json") "json"))
-           (first_room (yeReCreateString "first" wid "cur_room"))
-           (x (get_sprite_pos wid (yeGetStringAt wid "cur_room") "x"))
-           (y (get_sprite_pos wid (yeGetStringAt wid "cur_room") "y"))
-           (w (get_sprite_pos wid (yeGetStringAt wid "cur_room") "w"))
-           (h (get_sprite_pos wid (yeGetStringAt wid "cur_room") "h"))
-           )
+        ((unused (yePushBack wid (ygFileToEnt YJSON "rooms.json") "json"))
+          (first_room (yeReCreateString "first" wid "cur_room"))
+          (x (get_sprite_pos wid (yeGetStringAt wid "cur_room") "x"))
+          (y (get_sprite_pos wid (yeGetStringAt wid "cur_room") "y"))
+          (w (get_sprite_pos wid (yeGetStringAt wid "cur_room") "w"))
+          (h (get_sprite_pos wid (yeGetStringAt wid "cur_room") "h"))
+          )
         (begin
           (display "Hello world\n")
           (ywSetTurnLengthOverwrite 100000)
           (yeCreateFunction "tmst_action" wid "action")
           ;;(ywCanvasNewTextByStr wid 10 25 "test")
 
-          (yeReCreateInt 1 wid "cur_cooldown")
           ;; yeForeach take at first elem, array entity, 2nd a scheme function
           ;; and a thrid optional argument (not use, nor send here)
           ;; third argument is return by yeForeach (so nil here)
-          (yeForeach (yeGet wid "json")
-                     (lambda (room _unuesed)
-                       (yeReCreateInt
-                        (yeGetIntAt (yeGet  room "stats") "maxhp")
-                        (yeGet room "stats")
-                        "hp")
-                       )
-                     )
+          (init_room wid)
 
           (yePushBack wid (ywCanvasNewImg wid 0 0 "cave.jpg" (ywRectCreate 0 0 1000 1000)) "cave")
           (yePushBack wid (ywCanvasNewImg wid 550 (- 300 h)
@@ -387,10 +397,6 @@
           (ywCanvasSetStrColor (yeGet wid "def-stat-txt") "rgba: 255 255 255 255")
           (ywCanvasSetStrColor (yeGet wid "crit-stat-txt") "rgba: 255 255 255 255")
 
-          (add_reminiscence wid)
-
-          (yeCreateInt 0 wid "state")
-          (yeCreateInt 0 wid "state-a")
           (ywRectCreate 350 400 100 100 wid "clock-rect")
           (yePushBack wid (ywCanvasNewImg wid 350 400
                                           "spritesheets/Clock.png"

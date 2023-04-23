@@ -24,7 +24,7 @@
       "h": 176
     },
     "stats": {
-      "maxhp": 3,
+      "maxhp": 300,
       "atk": 4,
       "def": 0,
       "%crit": 10
