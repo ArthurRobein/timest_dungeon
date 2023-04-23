@@ -48,7 +48,23 @@
       )
     )
 
-  (define hero_hp_bar
+
+ (define cooldown_reset_bar
+   (lambda (wid)
+     (ywCanvasRemoveObj wid (yeGet wid "cool_bar_back"))
+     (ywCanvasRemoveObj wid (yeGet wid "cool_bar_front"))
+     (yeReplaceBack wid (ywCanvasNewRectangle wid 600 20 108 16 "rgba: 0 0 0 255") "cool_bar_back")
+     (yeReplaceBack wid (ywCanvasNewRectangle wid 605 24
+					   (round (/ (* (yeGetIntAt wid "cur_cooldown") 100)
+						     30)
+						  ) 8 "rgba: 0 255 0 255")
+		 "cool_bar_front")
+     (display (/ 100
+		 (/ (yeGetIntAt wid "cur_cooldown") 30)))
+     )
+   )
+
+ (define hero_hp_bar
     (lambda (wid)
       (let (
           (maxhp (get_stat wid "hero" "maxhp")) 
@@ -57,8 +73,8 @@
         (begin
           (ywCanvasRemoveObj wid (yeGet wid "hero_bar_back"))
           (ywCanvasRemoveObj wid (yeGet wid "hero_bar_front"))
-          (yePushBack wid (ywCanvasNewRectangle wid 176 198 108 16 "rgba: 0 0 0 255") "hero_bar_back")
-          (yePushBack wid (ywCanvasNewRectangle wid 180 202 (round (/ 100 (/ maxhp hp))) 8 "rgba: 0 255 0 255") "hero_bar_front")
+          (yeReplaceBack wid (ywCanvasNewRectangle wid 176 198 108 16 "rgba: 0 0 0 255") "hero_bar_back")
+          (yeReplaceBack wid (ywCanvasNewRectangle wid 180 202 (round (/ 100 (/ maxhp hp))) 8 "rgba: 0 255 0 255") "hero_bar_front")
 	  (display (/ 100 (/ maxhp hp)))
 	  (display " <- bar l\n")
         )
@@ -76,8 +92,8 @@
 
           (ywCanvasRemoveObj wid (yeGet wid "monster_bar_back"))
           (ywCanvasRemoveObj wid (yeGet wid "monster_bar_front"))
-          (yePushBack wid (ywCanvasNewRectangle wid 548 98 108 16 "rgba: 0 0 0 255") "monster_bar_back")
-          (yePushBack wid (ywCanvasNewRectangle wid 552 102 (/ 100 (/ maxhp hp)) 8 "rgba: 0 255 0 255") "monster_bar_front")      
+          (yeReplaceBack wid (ywCanvasNewRectangle wid 548 98 108 16 "rgba: 0 0 0 255") "monster_bar_back")
+          (yeReplaceBack wid (ywCanvasNewRectangle wid 552 102 (/ 100 (/ maxhp hp)) 8 "rgba: 0 255 0 255") "monster_bar_front")      
         )
       )
     )
@@ -137,6 +153,8 @@
 		)
 	      )
 	  (yeIncrAt wid "state-a")
+	  (yeIncrAt wid "cur_cooldown")
+	  (yeIntForceBound (yeGet wid "cur_cooldown") 0 30)
 	  (yePrint (yeGet(yeGet(yeGet wid "json") "hero") "stats"))
 	  (if (> (yeGetIntAt wid "state-a") 10)
 	      (begin
@@ -162,6 +180,7 @@
           (display str)
           (hero_hp_bar wid)
           (monster_hp_bar wid)
+          (cooldown_reset_bar wid)
         )
       )
     )
@@ -192,7 +211,8 @@
         (ywSetTurnLengthOverwrite 100000)
         (yeCreateFunction "tmst_action" wid "action")
         ;;(ywCanvasNewTextByStr wid 10 25 "test")
-        
+
+	(yeReCreateInt 1 wid "cur_cooldown")
         (set_stat wid "hero" "hp" (get_stat wid "hero" "maxhp"))
         (set_stat wid "first" "hp" (get_stat wid "first" "maxhp"))
         (display (get_stat wid "first" "maxhp"))
