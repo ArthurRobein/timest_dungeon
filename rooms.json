@@ -28,7 +28,7 @@
   "loop": {
     "type":"enemy",
     "stats": {
-      "hp": 10,
+      "maxhp": 10,
       "atk": 4,
       "def": 0,
       "%crit": 10
@@ -48,7 +48,7 @@
   "second": {
     "type":"enemy",
     "stats": {
-      "hp": 100,
+      "maxhp": 100,
       "atk": 4,
       "def": 6,
       "%crit": 10
@@ -58,7 +58,7 @@
   "the end": {
     "type":"enemy",
     "stats": {
-      "hp": 200,
+      "maxhp": 200,
       "atk": 35,
       "def": 30,
       "%crit": 10
