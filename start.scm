@@ -38,6 +38,19 @@
       )
     )
 
+  (define rm_obj
+    (lambda (wid key)
+      (ywCanvasRemoveObj wid (yeGet wid key))
+      )
+    )
+
+  (define repush_obj
+    (lambda (wid key obj)
+      (ywCanvasRemoveObj wid (yeGet wid key))
+      (yeReplaceBack wid obj key)
+      )
+    )
+
   (define get_cur_room
     (lambda (wid)
       (yeGet (yeGet wid "json") (yeGetStringAt wid "cur_room"))
@@ -181,7 +194,12 @@
                     (yeReCreateInt 0 wid "state")
                     )
                 (if (< (get_stat wid "hero" "hp") 1) (yeReCreateInt STATE_PJ_DEAD wid "state"))
-                (if (< (get_stat wid (yeGetStringAt wid "cur_room") "hp") 1) (yeReCreateInt STATE_ENEMY_DEAD wid "state"))
+                (if (< (get_stat wid (yeGetStringAt wid "cur_room") "hp") 1)
+		    (begin
+		      (yeReCreateInt 0 wid "new-win")
+		      (yeReCreateInt STATE_ENEMY_DEAD wid "state")
+		      )
+		    )
                 ))
           (if (= (yeGetIntAt wid "state") STATE_PJ_ATK)
               (begin
@@ -233,6 +251,8 @@
   (define choose_3_rooms
     (lambda (wid events)
       (begin
+	(rm_obj wid "win-rect")
+	(rm_obj wid "win-text")
         (display "choose between 3 rooms\n")
         )
       )
@@ -242,11 +262,22 @@
     (lambda (wid events)
       (let (
             (next_l (yeLen (yeGet (get_cur_room wid) "nexts")))
+            (new_win (yeGetIntAt wid "new-win"))
             )
         (begin
           (yePrint (yeGet (get_cur_room wid) "nexts"))
           (display next_l)
 	  (display "dead_enemy_action\n")
+	  (if (< new_win 30)
+	      (begin
+		(yeIncrAt wid "new-win")
+		(display "new win handler\n")
+		(repush_obj wid "win-rect"
+			    (ywCanvasNewRectangle wid 0 0 800 300 "rgba: 230 230 230 200"))
+		(repush_obj wid "win-text"
+			    (ywCanvasNewTextByStr wid 350 30 "Ta ta ta ta, tatatata ta ta\nYOU WIN"))
+		)
+	      (if (= 3 next_l) (choose_3_rooms wid events)))
           )
         )
       )
