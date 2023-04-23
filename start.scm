@@ -13,6 +13,18 @@
 ;  0. You just DO WHAT THE FUCK YOU WANT TO.
 
 (begin;; entry point
+
+  (define STATE_PJ_ATK 0)
+  (define STATE_PJ_END_ATK 1)
+  (define STATE_ENEMY_ATK 2)
+  (define STATE_ENEMY_END_ATK 3)
+  (define STATE_PJ_DEAD 4)
+
+  (define NB_TURN_COOLDOWN 30)
+  (define STATE_TURN_L 10)
+
+  (define STATE_DMG_TIME 8)
+
   (define mod_init
     (lambda (mod)
       (begin
@@ -56,11 +68,11 @@
      (yeReplaceBack wid (ywCanvasNewRectangle wid 600 20 108 16 "rgba: 0 0 0 255") "cool_bar_back")
      (yeReplaceBack wid (ywCanvasNewRectangle wid 605 24
 					   (round (/ (* (yeGetIntAt wid "cur_cooldown") 100)
-						     30)
-						  ) 8 "rgba: 0 255 0 255")
+						     NB_TURN_COOLDOWN)
+						  ) 8 "rgba: 0 55 233 255")
 		 "cool_bar_front")
      (display (/ 100
-		 (/ (yeGetIntAt wid "cur_cooldown") 30)))
+		 (/ (yeGetIntAt wid "cur_cooldown") NB_TURN_COOLDOWN)))
      )
    )
 
@@ -115,12 +127,11 @@
   (define combat_action
     (lambda (wid events)
       (let (
-        (str "Hello Action\n" )
         (maxhp (get_stat wid "hero" "maxhp"))
         (hp (get_stat wid "hero" "hp"))        
         )
         (begin
-	  (if (= (yeGetIntAt wid "state") 4) (ywCanvasStringSet (yeGet wid "dead-txt")
+	  (if (= (yeGetIntAt wid "state") STATE_PJ_DEAD) (ywCanvasStringSet (yeGet wid "dead-txt")
 								(yeCreateString "DEAD !!!! !!")))
 
 	  (if (and
@@ -137,14 +148,14 @@
 		(ywCanvasStringSet (yeGet wid "def-stat-txt") (yeStringAddInt (yeCreateString "Defense: ") (get_stat wid "hero" "def")))
 		(ywCanvasStringSet (yeGet wid "crit-stat-txt") (yeStringAddInt (yeCreateString "Crit rate: ") (get_stat wid "hero" "crit")))
 
-	  (if (= (yeGetIntAt wid "state-a") 5)
+	  (if (= (yeGetIntAt wid "state-a") STATE_DMG_TIME)
 	      (begin
-		(if (= (yeGetIntAt wid "state") 0)
+		(if (= (yeGetIntAt wid "state") STATE_PJ_ATK)
 		    (begin
 		      (add_stat wid "first" "hp"  (- (get_stat wid "hero" "atk")))
 		      (yeReCreateInt (get_stat wid "hero" "atk") wid "dmg-deal"))
 		    )
-		(if (= (yeGetIntAt wid "state") 2)
+		(if (= (yeGetIntAt wid "state") STATE_ENEMY_ATK)
 		    (begin
 		      (add_stat wid "hero" "hp"  (- (get_stat wid "first" "atk")))
 		      (yeReCreateInt (get_stat wid "first" "atk") wid "dmg-deal")
@@ -154,30 +165,29 @@
 	      )
 	  (yeIncrAt wid "state-a")
 	  (yeIncrAt wid "cur_cooldown")
-	  (yeIntForceBound (yeGet wid "cur_cooldown") 0 30)
+	  (yeIntForceBound (yeGet wid "cur_cooldown") 0 NB_TURN_COOLDOWN)
 	  (yePrint (yeGet(yeGet(yeGet wid "json") "hero") "stats"))
-	  (if (> (yeGetIntAt wid "state-a") 10)
+	  (if (> (yeGetIntAt wid "state-a") STATE_TURN_L)
 	      (begin
 		(yeReCreateInt 0 wid "state-a")
 		(yeIncrAt wid "state")
-		(if (> (yeGetIntAt wid "state") 3)
+		(if (> (yeGetIntAt wid "state") STATE_ENEMY_END_ATK)
 		    (yeReCreateInt 0 wid "state")
 		    )
 		(if (< (get_stat wid "hero" "hp") 1) (yeReCreateInt 4 wid "state"))
 		)
 	      )
-	  (if (= (yeGetIntAt wid "state") 0)
+	  (if (= (yeGetIntAt wid "state") STATE_PJ_ATK)
 		 (ywCanvasStringSet (yeGet wid "action-txt") (yeCreateString "the guy attack !!")))
-	  (if (= (yeGetIntAt wid "state") 1)
+	  (if (= (yeGetIntAt wid "state") STATE_PJ_END_ATK)
 	      (ywCanvasStringSet (yeGet wid "action-txt") (yeStringAddInt (yeCreateString "the guy deal")
 									  (yeGetIntAt wid "dmg-deal"))))
-	  (if (= (yeGetIntAt wid "state") 2)
+	  (if (= (yeGetIntAt wid "state") STATE_ENEMY_ATK)
 		  (ywCanvasStringSet (yeGet wid "action-txt") (yeCreateString "bad guy attack !!!"))
-	  (if (= (yeGetIntAt wid "state") 3)
+	  (if (= (yeGetIntAt wid "state") STATE_ENEMY_END_ATK)
 	      (ywCanvasStringSet (yeGet wid "action-txt") (yeStringAddInt (yeCreateString "bad guy deal")
 									  (yeGetIntAt wid "dmg-deal"))))
 	      )
-          (display str)
           (hero_hp_bar wid)
           (monster_hp_bar wid)
           (cooldown_reset_bar wid)
