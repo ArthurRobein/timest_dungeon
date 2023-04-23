@@ -58,7 +58,7 @@
     (lambda (wid room stat value)
       (yeAddAt (yeGet(yeGet(yeGet wid "json") room) "stats") stat value)
       )
-    )
+  )
 
 
  (define cooldown_reset_bar
@@ -117,7 +117,7 @@
         (y (modulo (yuiRand) 100))
       )
       (begin
-        (yePushBack wid (ywCanvasNewImg wid (+ 100 x) (+ 100 y) "spritesheets/HeroesHero.png" (ywRectCreate 9 88 36 70)) "remi")
+        (yePushBack wid (ywCanvasNewImg wid (+ 100 x) (+ 100 y) "spritesheets/Hero_idle.png" (ywRectCreate 26 22 43 63)) "remi")
       )
       )
     )
@@ -133,7 +133,7 @@
 	  (if (= (yeGetIntAt wid "state") STATE_PJ_DEAD) (ywCanvasStringSet (yeGet wid "dead-txt")
 								(yeCreateString "DEAD !!!! !!")))
 
-	  (if (and
+    (if (and
 	       (yevAnyMouseDown events)
 	       (ywRectContain (yeGet wid "clock-rect") (yeveMouseX) (yeveMouseY))
 	       )
@@ -174,18 +174,23 @@
 		    (yeReCreateInt 0 wid "state")
 		    )
 		(if (< (get_stat wid "hero" "hp") 1) (yeReCreateInt 4 wid "state"))
-		)
-	      )
+		))
 	  (if (= (yeGetIntAt wid "state") STATE_PJ_ATK)
-		 (ywCanvasStringSet (yeGet wid "action-txt") (yeCreateString "the guy attack !!")))
-	  (if (= (yeGetIntAt wid "state") STATE_PJ_END_ATK)
-	      (ywCanvasStringSet (yeGet wid "action-txt") (yeStringAddInt (yeCreateString "the guy deal")
-									  (yeGetIntAt wid "dmg-deal"))))
+		  (begin
+        (ywCanvasStringSet (yeGet wid "action-txt") (yeCreateString "the guy attack !!"))
+        (ywCanvasRemoveObj wid (yeGet wid "hero"))
+        (yeReplaceBack wid (ywCanvasNewImg wid 200 230 "spritesheets/Hero_attack.png" (ywRectCreate 225 18 88 68)) "hero")))
+    (if (= (yeGetIntAt wid "state") STATE_PJ_END_ATK)
+      (begin
+        (ywCanvasStringSet (yeGet wid "action-txt") (yeStringAddInt (yeCreateString "the guy deal")
+                  (yeGetIntAt wid "dmg-deal")))
+        (ywCanvasRemoveObj wid (yeGet wid "hero"))
+        (yeReplaceBack wid (ywCanvasNewImg wid 200 230 "spritesheets/Hero_idle.png" (ywRectCreate 26 22 43 63)) "hero")))
 	  (if (= (yeGetIntAt wid "state") STATE_ENEMY_ATK)
-		  (ywCanvasStringSet (yeGet wid "action-txt") (yeCreateString "bad guy attack !!!"))
+		  (ywCanvasStringSet (yeGet wid "action-txt") (yeCreateString "bad guy attack !!!")))
 	  (if (= (yeGetIntAt wid "state") STATE_ENEMY_END_ATK)
 	      (ywCanvasStringSet (yeGet wid "action-txt") (yeStringAddInt (yeCreateString "bad guy deal")
-									  (yeGetIntAt wid "dmg-deal"))))
+									  (yeGetIntAt wid "dmg-deal")))
 	      )
           (hero_hp_bar wid)
           (monster_hp_bar wid)
@@ -210,11 +215,11 @@
     (lambda (wid unues_type)
       (let
         ((unused (yePushBack wid (ygFileToEnt YJSON "rooms.json") "json"))
-	 (first_room (yeReCreateString "first" wid "cur_room"))
-         (x (get_sprite_pos wid (yeGetStringAt wid "cur_room") "x"))
-         (y (get_sprite_pos wid (yeGetStringAt wid "cur_room") "y"))
-         (w (get_sprite_pos wid (yeGetStringAt wid "cur_room") "w"))
-         (h (get_sprite_pos wid (yeGetStringAt wid "cur_room") "h"))
+	      (first_room (yeReCreateString "first" wid "cur_room"))
+        (x (get_sprite_pos wid (yeGetStringAt wid "cur_room") "x"))
+        (y (get_sprite_pos wid (yeGetStringAt wid "cur_room") "y"))
+        (w (get_sprite_pos wid (yeGetStringAt wid "cur_room") "w"))
+        (h (get_sprite_pos wid (yeGetStringAt wid "cur_room") "h"))
         )
         (begin
         (display "Hello world\n")
@@ -264,7 +269,7 @@
         (yePushBack wid (ywCanvasNewImg wid 350 400
 					"spritesheets/Clock.png"
 					(ywRectCreate 0 0 100 100)) "clock")
-        (yePushBack wid (ywCanvasNewImg wid 200 230 "spritesheets/HeroesHero.png" (ywRectCreate 9 88 36 70)) "hero")
+        (yePushBack wid (ywCanvasNewImg wid 200 230 "spritesheets/Hero_idle.png" (ywRectCreate 26 22 43 63)) "hero")
         (ywCanvasNewHSegment wid 0 300 1000 "rgba: 0 0 0 255")
         (ywidNewWidget (yaeString "rgba: 255 255 255 255" wid "background") "canvas")
         )
