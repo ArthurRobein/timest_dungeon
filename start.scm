@@ -66,11 +66,10 @@
      (ywCanvasRemoveObj wid (yeGet wid "cool_bar_back"))
      (ywCanvasRemoveObj wid (yeGet wid "cool_bar_front"))
      (yeReplaceBack wid (ywCanvasNewRectangle wid 600 20 108 16 "rgba: 0 0 0 255") "cool_bar_back")
-     (yeReplaceBack wid (ywCanvasNewRectangle wid 605 24
-					   (round (/ (* (yeGetIntAt wid "cur_cooldown") 100)
-						     NB_TURN_COOLDOWN)
-						  ) 8 "rgba: 0 55 233 255")
-		 "cool_bar_front")
+     (yeReplaceBack wid (ywCanvasNewRectangle wid 604 24
+			(round (/ (* (yeGetIntAt wid "cur_cooldown") 100) NB_TURN_COOLDOWN)
+      ) 8 "rgba: 0 55 233 255")
+		  "cool_bar_front")
      (display (/ 100
 		 (/ (yeGetIntAt wid "cur_cooldown") NB_TURN_COOLDOWN)))
      )
@@ -87,8 +86,8 @@
           (ywCanvasRemoveObj wid (yeGet wid "hero_bar_front"))
           (yeReplaceBack wid (ywCanvasNewRectangle wid 176 198 108 16 "rgba: 0 0 0 255") "hero_bar_back")
           (yeReplaceBack wid (ywCanvasNewRectangle wid 180 202 (round (/ 100 (/ maxhp hp))) 8 "rgba: 0 255 0 255") "hero_bar_front")
-	  (display (/ 100 (/ maxhp hp)))
-	  (display " <- bar l\n")
+	        (display (/ 100 (/ maxhp hp)))
+	        (display " <- bar l\n")
         )
       )
     )
@@ -115,7 +114,7 @@
     (lambda (wid)
       (let (
         (x (modulo (yuiRand) 200))
-        (y (modulo (yuiRand) 200))
+        (y (modulo (yuiRand) 100))
       )
       (begin
         (yePushBack wid (ywCanvasNewImg wid (+ 100 x) (+ 100 y) "spritesheets/HeroesHero.png" (ywRectCreate 9 88 36 70)) "remi")
