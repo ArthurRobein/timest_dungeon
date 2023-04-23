@@ -282,18 +282,37 @@
   (define choose_3_rooms
     (lambda (wid events)
       (display "choose between 3 rooms\n")
+
       (repush_obj wid "choose-rect-0"
 		  (ywCanvasNewRectangle wid 5 5 260 290 "rgba: 230 230 230 200"))
       (ywCanvasStringSet (yeGet wid "choose-txt-0") (yeCreateString "room 0"))
       (ywCanvasSetWeight wid (yeGet wid "choose-txt-0") 10)
+      (let ((rect (ywRectCreate 5 5 260 290)))
+	(if (ywRectContain rect (yeveMouseX) (yeveMouseY))
+	    (repush_obj wid "choose-yellow" (ywCanvasNewRectangleByRect wid rect "rgba: 190 190 60 100"))
+	    )
+	)
+
       (repush_obj wid "choose-rect-1"
 		  (ywCanvasNewRectangle wid 270 5 260 290 "rgba: 230 230 230 200"))
       (ywCanvasStringSet (yeGet wid "choose-txt-1") (yeCreateString "room 1"))
       (ywCanvasSetWeight wid (yeGet wid "choose-txt-1") 10)
+      (let ((rect (ywRectCreate 270 5 260 290)))
+	(if (ywRectContain rect (yeveMouseX) (yeveMouseY))
+	    (repush_obj wid "choose-blue" (ywCanvasNewRectangleByRect wid rect "rgba: 60 60 190 100"))
+	    )
+	)
+
       (repush_obj wid "choose-rect-2"
 		  (ywCanvasNewRectangle wid 535 5 260 290 "rgba: 230 230 230 200"))
       (ywCanvasStringSet (yeGet wid "choose-txt-2") (yeCreateString "room 2"))
       (ywCanvasSetWeight wid (yeGet wid "choose-txt-2") 10)
+      (let ((rect (ywRectCreate 535 5 260 290)))
+	(if (ywRectContain rect (yeveMouseX) (yeveMouseY))
+	    (repush_obj wid "choose-green" (ywCanvasNewRectangleByRect wid rect "rgba: 60 190 60 100"))
+	    )
+	)
+
       )
     )
 
