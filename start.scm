@@ -174,7 +174,8 @@
 		(if (> (yeGetIntAt wid "state") STATE_ENEMY_END_ATK)
 		    (yeReCreateInt 0 wid "state")
 		    )
-		(if (< (get_stat wid "hero" "hp") 1) (yeReCreateInt 4 wid "state"))
+		(if (< (get_stat wid "hero" "hp") 1) (yeReCreateInt STATE_PJ_DEAD wid "state"))
+		(if (< (get_stat wid (yeGetStringAt wid "cur_room") "hp") 1) (yeReCreateInt STATE_ENEMY_DEAD wid "state"))
 		)
 	      )
 	  (if (= (yeGetIntAt wid "state") STATE_PJ_ATK)
@@ -196,14 +197,31 @@
     )
   )
 
+  (define dead_action
+    (lambda (wid events)
+      (begin
+	(ywCanvasStringSet (yeGet wid "dead-txt")
+			   (yeCreateString "DEAD !!!! !!"))
+	(ywCanvasStringSet (yeGet wid "action-txt") (yeCreateString ""))
+	)
+      )
+    )
+
+  (define dead_enemy_action
+    (lambda (wid events)
+      (display "dead_enemy_action\n")
+      )
+    )
+
   (define tmst_action
     (lambda (wid events)
-      (if (= (yeGetIntAt wid "state") STATE_PJ_DEAD) (begin
-					   (ywCanvasStringSet (yeGet wid "dead-txt")
-							      (yeCreateString "DEAD !!!! !!"))
-					   (ywCanvasStringSet (yeGet wid "action-txt") (yeCreateString ""))
-					   )
-	  (combat_action wid events))
+      (if (= (yeGetIntAt wid "state") STATE_PJ_DEAD)
+	  (dead_action wid events)
+	  (if (= (yeGetIntAt wid "state") STATE_ENEMY_DEAD)
+	      (dead_enemy_action wid events)
+	      (combat_action wid events)
+	      )
+	  )
       )
     )
 
