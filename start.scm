@@ -156,7 +156,9 @@
             (y (modulo (yuiRand) 100))
             )
         (begin
-          (yePushBack wid (ywCanvasNewImg wid (+ 100 x) (+ 100 y) "spritesheets/Hero_idle.png" (ywRectCreate 26 22 43 63)) "remi")
+          (yePushBack wid (ywCanvasNewImg wid (+ 100 x) (+ 100 y) "spritesheets/Hero_idle.png"
+            (ywRectCreate 26 22 43 63)) (yeStringAddInt (yeCreateString "remi") (yeGet wid "reminiscence_number")))
+          (yeIncrAt wid "reminiscence_number")
           )
         )
       )
@@ -375,7 +377,7 @@
           ;; and a thrid optional argument (not use, nor send here)
           ;; third argument is return by yeForeach (so nil here)
           (init_room wid)
-
+          (yePushBack wid 0 "reminiscence_number")
           (yePushBack wid (ywCanvasNewImg wid 0 0 "cave.jpg" (ywRectCreate 0 0 1000 1000)) "cave")
           (yePushBack wid (ywCanvasNewImg wid 550 (- 300 h)
                                           (yeGetString(yeGet(yeGet(yeGet wid "json") (yeGetStringAt wid "cur_room")) "enemy-img"))
