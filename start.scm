@@ -38,6 +38,12 @@
     )
   )
 
+  (define get_cur_room
+    (lambda (wid)
+      (yeGet (yeGet wid "json") (yeGetStringAt wid "cur_room"))
+      )
+    )
+
   (define get_sprite_pos
     (lambda (wid room pos)
       (yeGetInt(yeGet(yeGet(yeGet(yeGet wid "json") room) "sprite-pos") pos))
@@ -219,9 +225,25 @@
       )
     )
 
+  (define choose_3_rooms
+    (lambda (wid events)
+      (begin
+	(display "choose between 3 rooms\n")
+       )
+      )
+    )
+
   (define reset_action
     (lambda (wid events)
-      (display "reset_action\n")
+      (let (
+	    (next_l (yeLen (yeGet (get_cur_room wid) "nexts")))
+	    )
+	(begin
+	 (yePrint (yeGet (get_cur_room wid) "nexts"))
+	 (display next_l)
+	 (display "reset_action\n")
+	 )
+	)
       )
     )
 
