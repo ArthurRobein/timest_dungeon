@@ -27,6 +27,15 @@
 
   (define STATE_DMG_TIME 8)
 
+  (define reprint_stats
+    (lambda (wid)
+      (ywCanvasStringSet (yeGet wid "hp-stat-txt") (yeStringAddInt (yeCreateString "Health: ") (get_stat wid "hero" "hp")))
+      (ywCanvasStringSet (yeGet wid "atk-stat-txt") (yeStringAddInt (yeCreateString "Attack: ") (get_stat wid "hero" "atk")))
+      (ywCanvasStringSet (yeGet wid "def-stat-txt") (yeStringAddInt (yeCreateString "Defense: ") (get_stat wid "hero" "def")))
+      (ywCanvasStringSet (yeGet wid "crit-stat-txt") (yeStringAddInt (yeCreateString "Crit rate: ") (get_stat wid "hero" "%crit")))
+      )
+    )
+
   (define mod_init
     (lambda (mod)
       (begin
@@ -163,10 +172,6 @@
 
           (yePrint (yeGet wid "state"))
           (yePrint (yeGet wid "state-a"))
-          (ywCanvasStringSet (yeGet wid "hp-stat-txt") (yeStringAddInt (yeCreateString "Health: ") (get_stat wid "hero" "hp")))
-          (ywCanvasStringSet (yeGet wid "atk-stat-txt") (yeStringAddInt (yeCreateString "Attack: ") (get_stat wid "hero" "atk")))
-          (ywCanvasStringSet (yeGet wid "def-stat-txt") (yeStringAddInt (yeCreateString "Defense: ") (get_stat wid "hero" "def")))
-          (ywCanvasStringSet (yeGet wid "crit-stat-txt") (yeStringAddInt (yeCreateString "Crit rate: ") (get_stat wid "hero" "crit")))
 
           (if (= (yeGetIntAt wid "state-a") STATE_DMG_TIME)
               (begin
@@ -268,6 +273,25 @@
           (yePrint (yeGet (get_cur_room wid) "nexts"))
           (display next_l)
 	  (display "dead_enemy_action\n")
+	  (if (= new_win 0)
+	      (let (
+		    (rand (modulo (yuiRand) 4))
+		    )
+		(if (= rand 0)
+		    (begin (add_stat wid "hero" "maxhp" 1)
+			   (add_stat wid "hero" "hp" 1)
+			   (yeReCreateString "maxhp" wid "which-win")))
+		(if (= rand 1)
+		    (begin (add_stat wid "hero" "atk" 1)
+			   (yeReCreateString "atk" wid "which-win")))
+		(if (= rand 2)
+		    (begin (add_stat wid "hero" "def" 1)
+			   (yeReCreateString "def" wid "which-win")))
+		(if (= rand 3)
+		    (begin (add_stat wid "hero" "%crit" 1)
+			   (yeReCreateString "%crit" wid "which-win")))
+		)
+	      )
 	  (if (< new_win 30)
 	      (begin
 		(yeIncrAt wid "new-win")
@@ -275,7 +299,10 @@
 		(repush_obj wid "win-rect"
 			    (ywCanvasNewRectangle wid 0 0 800 300 "rgba: 230 230 230 200"))
 		(repush_obj wid "win-text"
-			    (ywCanvasNewTextByStr wid 350 30 "Ta ta ta ta, tatatata ta ta\nYOU WIN"))
+			    (ywCanvasNewText wid 350 30
+					     (yeStringAdd (yeCreateString "Ta ta ta ta, tatatata ta ta\nYOU WIN\n") (yeGetStringAt wid "which-win"))
+					     )
+			    )
 		)
 	      (if (= 3 next_l) (choose_3_rooms wid events)))
           )
@@ -285,6 +312,7 @@
 
   (define tmst_action
     (lambda (wid events)
+      (reprint_stats wid)
       (if (and
            (and (> (yeGetIntAt wid "cur_cooldown") (- NB_TURN_COOLDOWN 1))
                 (yevAnyMouseDown events))
