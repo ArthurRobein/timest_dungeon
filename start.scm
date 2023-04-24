@@ -318,6 +318,39 @@
       )
     )
 
+  (define choose_2_rooms
+    (lambda (wid events)
+      (display "choose between 2 rooms\n")
+
+      (repush_obj wid "choose-rect-0"
+		  (ywCanvasNewRectangle wid 5 5 395 290 "rgba: 230 230 230 200"))
+      (ywCanvasStringSet (yeGet wid "choose-txt-0") (yeCreateString "room 0"))
+      (ywCanvasSetWeight wid (yeGet wid "choose-txt-0") 10)
+
+      (repush_obj wid "choose-rect-1"
+		  (ywCanvasNewRectangle wid 405 5 395 290 "rgba: 230 230 230 200"))
+      (ywCanvasStringSet (yeGet wid "choose-txt-2") (yeCreateString "room 1"))
+      (ywCanvasSetWeight wid (yeGet wid "choose-txt-2") 10)
+
+      (let ((rect (ywRectCreate 5 5 395 290)))
+	(if (ywRectContain rect (yeveMouseX) (yeveMouseY))
+	    (begin
+	      (repush_obj wid "choose-yellow" (ywCanvasNewRectangleByRect wid rect "rgba: 190 190 60 100"))
+	      (if (yevAnyMouseDown events) (goto_room wid (yeGet (yeGet (get_cur_room wid) "nexts") 0)))
+	      )
+	    )
+	  )
+
+      (let ((rect (ywRectCreate 405 5 395 290)))
+	(if (ywRectContain rect (yeveMouseX) (yeveMouseY))
+	    (begin
+	      (repush_obj wid "choose-blue" (ywCanvasNewRectangleByRect wid rect "rgba: 60 60 190 100"))
+	      (if (yevAnyMouseDown events) (goto_room wid (yeGet (yeGet (get_cur_room wid) "nexts") 1))))
+	    )
+	    )
+    )
+  )
+
   (define choose_3_rooms
     (lambda (wid events)
       (display "choose between 3 rooms\n")
@@ -406,9 +439,9 @@
 		(rm_obj wid "win-rect")
 		(rm_obj wid "win-text")
 		(if (= 3 next_l) (choose_3_rooms wid events)
-		    (if (= 1 next_l)
-			(only_1_room wid)
-			(display "odd number of ROOM !!!!")))
+        (if (= 1 next_l) (only_1_room wid)
+          (if (= 2 next_l) (choose_2_rooms wid events)
+			(display "odd number of ROOM !!!!"))))
 		)
 	      )
           )
@@ -505,11 +538,6 @@
           (ywSetTurnLengthOverwrite -1)
 	  (yeReCreateInt 0 wid "=timer")
           (yeCreateFunction "tmst_action_timer" wid "action")
-          ;;(ywCanvasNewTextByStr wid 10 25 "test")
-
-          ;; yeForeach take at first elem, array entity, 2nd a scheme function
-          ;; and a thrid optional argument (not use, nor send here)
-          ;; third argument is return by yeForeach (so nil here)
           (init_room wid)
           (yeCreateInt 0 wid "reminiscence_number")
           (yePushBack wid (ywCanvasNewImg wid 0 0 "cave.jpg" (ywRectCreate 0 0 1000 1000)) "cave")

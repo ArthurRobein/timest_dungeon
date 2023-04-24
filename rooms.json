@@ -29,7 +29,7 @@
       "def": 0,
       "%crit": 10
       },
-    "nexts": [["compas", "obj"], ["2nd", "end"], ["loop", "trap"]]
+    "nexts": [["compas", "obj"], ["2nd", "end"]]
   },
   "loop": {
     "type":"enemy",
