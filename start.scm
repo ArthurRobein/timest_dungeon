@@ -151,7 +151,7 @@
             (y (modulo (yuiRand) 100))
             )
         (begin
-          (yeReplaceBack wid (ywCanvasNewImg wid (+ 100 x) (+ 100 y) "spritesheets/Hero_idle.png"
+          (yeReplaceBack wid (ywCanvasNewImg wid (+ 100 x) (+ 100 y) "spritesheets/Remi_idle.png"
             (ywRectCreate 26 22 43 63))
             (yeGetString (yeStringAddInt (yeCreateString "remi") (yeGetIntAt wid "reminiscence_number"))))
           (yeIncrAt wid "reminiscence_number")
@@ -175,13 +175,13 @@
               (begin
               (display "PJ ATK\n")
               (ywCanvasRemoveObj wid (yeGet wid (yeGetString (yeStringAddInt (yeCreateString "remi") num))))
-              (yeReplaceBack wid (ywCanvasNewImg wid remi_x remi_y "spritesheets/Hero_attack.png" (ywRectCreate 225 18 88 68))
+              (yeReplaceBack wid (ywCanvasNewImg wid remi_x remi_y "spritesheets/Remi_attack.png" (ywRectCreate 225 18 88 68))
                 (yeGetString (yeStringAddInt (yeCreateString "remi") num)))
             ))
             (if (= state STATE_PJ_END_ATK)
               (begin
               (ywCanvasRemoveObj wid (yeGet wid (yeGetString (yeStringAddInt (yeCreateString "remi") num))))
-              (yeReplaceBack wid (ywCanvasNewImg wid remi_x remi_y "spritesheets/Hero_idle.png" (ywRectCreate 26 22 43 63))
+              (yeReplaceBack wid (ywCanvasNewImg wid remi_x remi_y "spritesheets/Remi_idle.png" (ywRectCreate 26 22 43 63))
                 (yeGetString (yeStringAddInt (yeCreateString "remi") num)))
             ))
             (reminiscence_attack wid (+ 1 num) state)
