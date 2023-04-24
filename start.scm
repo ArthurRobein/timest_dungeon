@@ -22,7 +22,7 @@
   (define STATE_ENEMY_DEAD 5)
   (define STATE_RESET 6)
 
-  (define NB_TURN_COOLDOWN 1)
+  (define NB_TURN_COOLDOWN 20)
   (define STATE_TURN_L 10)
 
   (define STATE_DMG_TIME 8)
@@ -195,8 +195,8 @@
             (total_dmg (+ (get_stat wid "hero" "atk") (* (yeGetIntAt wid "reminiscence_number") (get_stat wid "hero" "atk"))))
             )
         (begin
-          (yePrint (yeGet wid "state"))
-          (yePrint (yeGet wid "state-a"))
+          ;(yePrint (yeGet wid "state"))
+          ;(yePrint (yeGet wid "state-a"))
           (if (= (yeGetIntAt wid "state-a") STATE_DMG_TIME)
             (begin
               (if (= (yeGetIntAt wid "state") STATE_PJ_ATK)
@@ -312,6 +312,12 @@
       )
     )
 
+  (define only_1_room
+    (lambda (wid)
+      (display "only 1 room\n")
+      )
+    )
+
   (define choose_3_rooms
     (lambda (wid events)
       (display "choose between 3 rooms\n")
@@ -400,7 +406,9 @@
 		(rm_obj wid "win-rect")
 		(rm_obj wid "win-text")
 		(if (= 3 next_l) (choose_3_rooms wid events)
-		    (display "odd number of ROOM !!!!"))
+		    (if (= 1 next_l)
+			(only_1_room wid)
+			(display "odd number of ROOM !!!!")))
 		)
 	      )
           )
@@ -436,13 +444,17 @@
   (define tmst_action
     (lambda (wid events)
       (reprint_stats wid)
-      (if
-        (and
-          (and
-            (and (> (yeGetIntAt wid "cur_cooldown") (- NB_TURN_COOLDOWN 1))
-                (yevAnyMouseDown events))
-            (ywRectContain (yeGet wid "clock-rect") (yeveMouseX) (yeveMouseY)))
-            (> STATE_PJ_DEAD (yeGetIntAt wid "state")))
+      (if (and
+	   (and
+            (or
+	     (and (ywRectContain (yeGet wid "clock-rect") (yeveMouseX) (yeveMouseY))
+                  (yevAnyMouseDown events))
+	     (yevIsKeyDown events Y_R_KEY)
+	     )
+            (> (yeGetIntAt wid "cur_cooldown") (- NB_TURN_COOLDOWN 1))
+            )
+	   (> STATE_PJ_DEAD (yeGetIntAt wid "state"))
+	   )
           (begin
             (display "on clock")
             (yeReCreateInt STATE_RESET wid "state")
@@ -467,14 +479,12 @@
       (if (> (yeGetIntAt wid "=timer") (- 100000 1))
 	  (begin
 	    (yeReCreateInt 0 wid "=timer")
-	    (tmst_action wid (yePushArrayBack events (yeGet wid "=eves")))
-	    (yePrint events)
-	    (yeReCreateArray wid "=eves")
+	    (tmst_action wid (yeveCopyBack events (yeGet wid "=eves")))
+	    (yeRemoveChildByStr wid "=eves")
 	    )
 	  (begin
 	    (yeAddAt wid "=timer" (ywidGetTurnTimer))
-	    (yePushArrayBack (yeGet wid "=eves") events)
-	    (yePrint (yeGet wid "=eves"))
+	    (yeReplaceBack wid (yeveCopyBack (yeGet wid "=eves") events) "=eves")
 	    )
 	  )
       )
@@ -494,7 +504,6 @@
           (display "Hello world\n")
           (ywSetTurnLengthOverwrite -1)
 	  (yeReCreateInt 0 wid "=timer")
-	  (yeReCreateArray wid "=eves")
           (yeCreateFunction "tmst_action_timer" wid "action")
           ;;(ywCanvasNewTextByStr wid 10 25 "test")
 
