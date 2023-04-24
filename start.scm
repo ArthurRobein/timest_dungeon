@@ -476,11 +476,6 @@
           (display "Hello world\n")
           (ywSetTurnLengthOverwrite 100000)
           (yeCreateFunction "tmst_action" wid "action")
-          ;;(ywCanvasNewTextByStr wid 10 25 "test")
-
-          ;; yeForeach take at first elem, array entity, 2nd a scheme function
-          ;; and a thrid optional argument (not use, nor send here)
-          ;; third argument is return by yeForeach (so nil here)
           (init_room wid)
           (yeCreateInt 0 wid "reminiscence_number")
           (yePushBack wid (ywCanvasNewImg wid 0 0 "cave.jpg" (ywRectCreate 0 0 1000 1000)) "cave")
