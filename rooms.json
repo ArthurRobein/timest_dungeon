@@ -23,20 +23,20 @@
       "w": 171,
       "h": 176
     },
-    "stats": {
+      "stats": {
       "maxhp": 24,
       "atk": 4,
       "def": 4,
       "%crit": 10
       },
-    "nexts": [["compas", "obj"], ["2nd", "end"]]
+      "nexts": [["compas", "obj"], ["2nd", "end"], ["loop", "trap"]]
   },
   "loop": {
     "type":"enemy",
     "stats": {
-      "maxhp": 10,
-      "atk": 4,
-      "def": 0,
+      "maxhp": 20,
+      "atk": 6,
+      "def": 2,
       "%crit": 10
       },
     "nexts": [["loop", "trap"]]

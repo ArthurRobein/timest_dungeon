@@ -91,6 +91,38 @@
       )
     )
 
+  (define init_cur_room
+    (lambda (wid)
+      (yeForeach (yeGet wid "json")
+		 (lambda (room _unused)
+		   (yeReCreateInt
+		    (yeGetIntAt (yeGet room "stats") "maxhp")
+		    (yeGet room "stats")
+		    "hp")
+		   )
+		 )
+      (yeReCreateInt STATE_PJ_ATK wid "state")
+      (yeReCreateInt 0 wid "state-a")
+      (yeReCreateInt 1 wid "cur_cooldown")
+      )
+    )
+
+  (define init_room
+    (lambda (wid)
+      (yeForeach (yeGet wid "json")
+        (lambda (room _unused)
+          (yeReCreateInt
+          (yeGetIntAt (yeGet  room "stats") "maxhp")
+          (yeGet room "stats")
+          "hp")
+        )
+	)
+      (yeReCreateString "first" wid "cur_room")
+      (yeReCreateInt STATE_PJ_ATK wid "state")
+      (yeReCreateInt 0 wid "state-a")
+      (yeReCreateInt 1 wid "cur_cooldown")
+    )
+  )
 
   (define cooldown_reset_bar
     (lambda (wid)
@@ -119,7 +151,6 @@
           (if (> hp 0)
               (yeReplaceBack wid (ywCanvasNewRectangle wid 180 202 (round (/ 100 (/ maxhp hp))) 8 "rgba: 0 255 0 255") "hero_bar_front")
               )
-          (display " <- bar l\n")
           )
         )
       )
@@ -298,7 +329,7 @@
     (lambda (wid room_info)
       (yePrint room_info)
       (yeReCreateString (yeGetStringAt room_info 0) wid "cur_room")
-      (yeReCreateInt STATE_PJ_ATK wid "state")
+      (yeReCreateInt STATE_ENEMY_ATK wid "state")
 
       (yePrint (get_cur_room wid))
       (rm_obj wid "choose-yellow")
@@ -313,9 +344,66 @@
       )
     )
 
-  (define only_1_room
+  (define win
     (lambda (wid)
+      (ywCanvasStringSet (yeGet wid "choose-txt-0") (yeCreateString "YOU WIN"))
+      (ywCanvasSetStrColor (yeGet wid "choose-txt-0") "rgba: 255 255 255 255")
+      (ywCanvasMoveObjXY (yeGet wid "choose-txt-0") 0 1)
+      (ywCanvasStringSet (yeGet wid "choose-txt-1") (yeCreateString "YOU WIN"))
+      (ywCanvasSetStrColor (yeGet wid "choose-txt-1") "rgba: 255 255 255 255")
+      (ywCanvasMoveObjXY (yeGet wid "choose-txt-1") 0 2)
+      (ywCanvasStringSet (yeGet wid "choose-txt-2") (yeCreateString "YOU WIN"))
+      (ywCanvasSetStrColor (yeGet wid "choose-txt-2") "rgba: 255 255 255 255")
+      (ywCanvasMoveObjXY (yeGet wid "choose-txt-2") 0 3)
+
+      )
+    )
+
+  (define only_no_room
+    (lambda (wid events)
+      (display "only 0 room\n")
+      (repush_obj wid "choose-rect-0"
+		  (ywCanvasNewRectangle wid 10 10 780 280 "rgba: 230 230 230 200"))
+      (ywCanvasStringSet (yeGet wid "choose-txt-0") (yeCreateString "It's a trap !!!!!"))
+      (ywCanvasSetWeight wid (yeGet wid "choose-txt-0") 10)
+      (let ((rect (ywRectCreate 5 5 790 290)))
+	(if (ywRectContain rect (yeveMouseX) (yeveMouseY))
+	    (begin
+	      (repush_obj wid "choose-yellow" (ywCanvasNewRectangleByRect wid rect "rgba: 190 190 60 100"))
+	      (if (yevAnyMouseDown events)
+		  (begin
+		    (ywCanvasStringSet (yeGet wid "choose-txt-0") (yeCreateString ""))
+		    (rm_obj wid "choose-rect-0")
+		    (rm_obj wid "choose-yellow")
+		    (add_stat wid (yeGetStringAt wid "cur_room") "maxhp" 16)
+		    (add_stat wid (yeGetStringAt wid "cur_room") "atk" 6)
+		    (add_stat wid (yeGetStringAt wid "cur_room") "def" 6)
+		    (add_stat wid (yeGetStringAt wid "cur_room") "%crit" 3)
+		    (init_cur_room wid)
+		    )
+		  )
+	      )
+	    )
+	)
+      )
+    )
+
+  (define only_1_room
+    (lambda (wid events)
       (display "only 1 room\n")
+      (repush_obj wid "choose-rect-0"
+		  (ywCanvasNewRectangle wid 10 10 780 280 "rgba: 230 230 230 200"))
+      (ywCanvasStringSet (yeGet wid "choose-txt-0") (yeCreateString "room 0"))
+      (ywCanvasSetWeight wid (yeGet wid "choose-txt-0") 10)
+      (let ((rect (ywRectCreate 5 5 790 290)))
+	(if (ywRectContain rect (yeveMouseX) (yeveMouseY))
+	    (begin
+	      (repush_obj wid "choose-yellow" (ywCanvasNewRectangleByRect wid rect "rgba: 190 190 60 100"))
+	      (if (yevAnyMouseDown events) (goto_room wid (yeGet (yeGet (get_cur_room wid) "nexts") 0)))
+	      )
+	    )
+	)
+
       )
     )
 
@@ -439,33 +527,22 @@
 	      (begin
 		(rm_obj wid "win-rect")
 		(rm_obj wid "win-text")
-		(if (= 3 next_l) (choose_3_rooms wid events)
-        (if (= 1 next_l) (only_1_room wid)
-          (if (= 2 next_l) (choose_2_rooms wid events)
-			(display "odd number of ROOM !!!!"))))
+		(if (= (yeGetIntAt (get_cur_room wid) "the end") 1) (win wid)
+		    (if (= 3 next_l) (choose_3_rooms wid events)
+			(if (= 1 next_l) (only_1_room wid events)
+			    (if (= 2 next_l) (choose_2_rooms wid events)
+				(if (= 0 next_l) (only_no_room wid events)
+				    (display "odd number of ROOM !!!!"))
+				)
+			    )
+			)
+		    )
 		)
 	      )
           )
         )
       )
     )
-
-  (define init_room
-    (lambda (wid)
-      (yeForeach (yeGet wid "json")
-        (lambda (room _unused)
-          (yeReCreateInt
-          (yeGetIntAt (yeGet  room "stats") "maxhp")
-          (yeGet room "stats")
-          "hp")
-        )
-	)
-      (yeReCreateString "first" wid "cur_room")
-      (yeReCreateInt 0 wid "state")
-      (yeReCreateInt 0 wid "state-a")
-      (yeReCreateInt 1 wid "cur_cooldown")
-    )
-  )
 
   (define reset_action
     (lambda (wid events)
