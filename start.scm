@@ -96,8 +96,8 @@
     (lambda (wid)
       (ywCanvasRemoveObj wid (yeGet wid "cool_bar_front"))
       (ywCanvasRemoveObj wid (yeGet wid "cool_bar_back"))
-      (yeReplaceBack wid (ywCanvasNewRectangle wid 600 20 108 16 "rgba: 0 0 0 255") "cool_bar_back")
-      (yeReplaceBack wid (ywCanvasNewRectangle wid 604 24
+      (yeReplaceBack wid (ywCanvasNewRectangle wid 348 518 108 16 "rgba: 0 0 0 255") "cool_bar_back")
+      (yeReplaceBack wid (ywCanvasNewRectangle wid 352 522
                                                (round (/ (* (yeGetIntAt wid "cur_cooldown") 100) NB_TURN_COOLDOWN)
                                                       ) 8 "rgba: 0 55 233 255")
                      "cool_bar_front")
