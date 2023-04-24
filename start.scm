@@ -22,7 +22,7 @@
   (define STATE_ENEMY_DEAD 5)
   (define STATE_RESET 6)
 
-  (define NB_TURN_COOLDOWN 30)
+  (define NB_TURN_COOLDOWN 1)
   (define STATE_TURN_L 10)
 
   (define STATE_DMG_TIME 8)
@@ -462,6 +462,24 @@
       )
     )
 
+  (define tmst_action_timer
+    (lambda (wid events)
+      (if (> (yeGetIntAt wid "=timer") (- 100000 1))
+	  (begin
+	    (yeReCreateInt 0 wid "=timer")
+	    (tmst_action wid (yePushArrayBack events (yeGet wid "=eves")))
+	    (yePrint events)
+	    (yeReCreateArray wid "=eves")
+	    )
+	  (begin
+	    (yeAddAt wid "=timer" (ywidGetTurnTimer))
+	    (yePushArrayBack (yeGet wid "=eves") events)
+	    (yePrint (yeGet wid "=eves"))
+	    )
+	  )
+      )
+    )
+
   (define tmst_init
     (lambda (wid unues_type)
       (let
@@ -474,8 +492,15 @@
           )
         (begin
           (display "Hello world\n")
-          (ywSetTurnLengthOverwrite 100000)
-          (yeCreateFunction "tmst_action" wid "action")
+          (ywSetTurnLengthOverwrite -1)
+	  (yeReCreateInt 0 wid "=timer")
+	  (yeReCreateArray wid "=eves")
+          (yeCreateFunction "tmst_action_timer" wid "action")
+          ;;(ywCanvasNewTextByStr wid 10 25 "test")
+
+          ;; yeForeach take at first elem, array entity, 2nd a scheme function
+          ;; and a thrid optional argument (not use, nor send here)
+          ;; third argument is return by yeForeach (so nil here)
           (init_room wid)
           (yeCreateInt 0 wid "reminiscence_number")
           (yePushBack wid (ywCanvasNewImg wid 0 0 "cave.jpg" (ywRectCreate 0 0 1000 1000)) "cave")
