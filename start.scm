@@ -192,11 +192,10 @@
       (let (
             (maxhp (get_stat wid "hero" "maxhp"))
             (hp (get_stat wid "hero" "hp"))
-            (total_dmg (+ (get_stat wid "hero" "atk") (* (yeGetIntAt wid "reminiscence_number") (get_stat wid "hero" "atk"))))
+            (total_dmg (- (+ (get_stat wid "hero" "atk") (* (yeGetIntAt wid "reminiscence_number") (get_stat wid "hero" "atk")))
+              (get_stat wid (yeGetStringAt wid "cur_room") "def")))
             )
         (begin
-          ;(yePrint (yeGet wid "state"))
-          ;(yePrint (yeGet wid "state-a"))
           (if (= (yeGetIntAt wid "state-a") STATE_DMG_TIME)
             (begin
               (if (= (yeGetIntAt wid "state") STATE_PJ_ATK)
@@ -207,11 +206,13 @@
               (if (= (yeGetIntAt wid "state") STATE_ENEMY_ATK)
                 (let (
                   (rand (modulo (yuiRand) (yeGetIntAt wid "reminiscence_number")))
+                  (enemy_dmg (- (get_stat wid (yeGetStringAt wid "cur_room") "atk")
+                        (get_stat wid "hero" "def")))
                   )
                   (if (= (yeGetIntAt wid "reminiscence_number") 0)
                     (begin
-                      (add_stat wid "hero" "hp"  (- (get_stat wid (yeGetStringAt wid "cur_room") "atk")))
-                      (yeReCreateInt (get_stat wid (yeGetStringAt wid "cur_room") "atk") wid "dmg-deal"))
+                      (add_stat wid "hero" "hp" (- enemy_dmg))
+                      (yeReCreateInt enemy_dmg wid "dmg-deal"))
                     (begin
                       (if (> rand 0)
                         (begin
@@ -219,8 +220,8 @@
                           (ywCanvasRemoveObj wid
                             (yeGet wid (yeGetString (yeStringAddInt (yeCreateString "remi") (yeGetIntAt wid "reminiscence_number"))))))
                         (begin
-                          (add_stat wid "hero" "hp"  (- (get_stat wid (yeGetStringAt wid "cur_room") "atk")))
-                          (yeReCreateInt (get_stat wid (yeGetStringAt wid "cur_room") "atk") wid "dmg-deal")))
+                          (add_stat wid "hero" "hp"  (- enemy_dmg))
+                          (yeReCreateInt enemy_dmg wid "dmg-deal")))
                     )
                   )
                 )

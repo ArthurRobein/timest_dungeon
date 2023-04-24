@@ -1,9 +1,9 @@
 {
   "hero": {
     "stats": {
-      "maxhp": 20,
+      "maxhp": 4,
       "atk": 4,
-      "def": 0,
+      "def": 2,
       "%crit": 10
       }
   },
@@ -26,7 +26,7 @@
     "stats": {
       "maxhp": 24,
       "atk": 4,
-      "def": 0,
+      "def": 4,
       "%crit": 10
       },
     "nexts": [["compas", "obj"], ["2nd", "end"]]
