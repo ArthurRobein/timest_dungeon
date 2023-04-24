@@ -119,7 +119,6 @@
           (if (> hp 0)
               (yeReplaceBack wid (ywCanvasNewRectangle wid 180 202 (round (/ 100 (/ maxhp hp))) 8 "rgba: 0 255 0 255") "hero_bar_front")
               )
-                                        ;(display (/ 100 (/ maxhp hp)))
           (display " <- bar l\n")
           )
         )
@@ -168,9 +167,6 @@
           (remi_y (ywCanvasObjPosY (yeGet wid (yeGetString (yeStringAddInt (yeCreateString "remi") num)))))
         )
           (begin
-            (display "Remi: ")
-            (display num)
-            (display "\n")
             (if (= state STATE_PJ_ATK)
               (begin
               (display "PJ ATK\n")
@@ -209,12 +205,28 @@
                   (yeReCreateInt total_dmg wid "dmg-deal"))
                 )
               (if (= (yeGetIntAt wid "state") STATE_ENEMY_ATK)
-                (begin
-                  (add_stat wid "hero" "hp"  (- (get_stat wid (yeGetStringAt wid "cur_room") "atk")))
-                  (yeReCreateInt (get_stat wid (yeGetStringAt wid "cur_room") "atk") wid "dmg-deal"))
+                (let (
+                  (rand (modulo (yuiRand) (yeGetIntAt wid "reminiscence_number")))
+                  )
+                  (if (= (yeGetIntAt wid "reminiscence_number") 0)
+                    (begin
+                      (add_stat wid "hero" "hp"  (- (get_stat wid (yeGetStringAt wid "cur_room") "atk")))
+                      (yeReCreateInt (get_stat wid (yeGetStringAt wid "cur_room") "atk") wid "dmg-deal"))
+                    (begin
+                      (if (> rand 0)
+                        (begin
+                          (yeAddAt wid "reminiscence_number" -1)
+                          (ywCanvasRemoveObj wid
+                            (yeGet wid (yeGetString (yeStringAddInt (yeCreateString "remi") (yeGetIntAt wid "reminiscence_number"))))))
+                        (begin
+                          (add_stat wid "hero" "hp"  (- (get_stat wid (yeGetStringAt wid "cur_room") "atk")))
+                          (yeReCreateInt (get_stat wid (yeGetStringAt wid "cur_room") "atk") wid "dmg-deal")))
+                    )
+                  )
                 )
               )
             )
+          )
           (yeIncrAt wid "state-a")
           (yeIncrAt wid "cur_cooldown")
           (yeIntForceBound (yeGet wid "cur_cooldown") 0 NB_TURN_COOLDOWN)
@@ -242,7 +254,7 @@
                 ))
           (if (= (yeGetIntAt wid "state") STATE_PJ_END_ATK)
               (begin
-                (ywCanvasStringSet (yeGet wid "action-txt") (yeStringAddInt (yeCreateString "the guy deal")
+                (ywCanvasStringSet (yeGet wid "action-txt") (yeStringAddInt (yeCreateString "the guy deal ")
                                                                             (yeGetIntAt wid "dmg-deal")))
                 (ywCanvasRemoveObj wid (yeGet wid "hero"))
                 (yeReplaceBack wid (ywCanvasNewImg wid 200 230 "spritesheets/Hero_idle.png" (ywRectCreate 26 22 43 63)) "hero")
@@ -256,12 +268,12 @@
                 (yeReplaceBack wid (ywCanvasNewImg wid 200 230 "spritesheets/Hero_hurt.png" (ywRectCreate 7 27 46 59)) "hero")))
           (if (= (yeGetIntAt wid "state") STATE_ENEMY_END_ATK)
               (begin
-                (ywCanvasStringSet (yeGet wid "action-txt") (yeStringAddInt (yeCreateString "bad guy deal")
+                (ywCanvasStringSet (yeGet wid "action-txt") (yeStringAddInt (yeCreateString "bad guy deal ")
                                                                             (yeGetIntAt wid "dmg-deal")))
                 (ywCanvasRemoveObj wid (yeGet wid "hero"))
                 (ywCanvasMoveObjXY (yeGet wid "monster") 5 0)
                 (yeReplaceBack wid (ywCanvasNewImg wid 200 230 "spritesheets/Hero_idle.png" (ywRectCreate 26 22 43 63)) "hero")))
-          
+
           (hero_hp_bar wid)
           (monster_hp_bar wid)
           (cooldown_reset_bar wid)
@@ -275,6 +287,8 @@
       (begin
         (ywCanvasStringSet (yeGet wid "dead-txt") (yeCreateString "DEAD !!!! !!"))
         (ywCanvasStringSet (yeGet wid "action-txt") (yeCreateString ""))
+        (ywCanvasRemoveObj wid (yeGet wid "hero"))
+        (yeReplaceBack wid (ywCanvasNewImg wid 200 248 "spritesheets/Hero_dead.png" (ywRectCreate 98 41 47 45)) "hero")
         )
       )
     )
@@ -335,15 +349,14 @@
 	)
 
       (let ((rect (ywRectCreate 535 5 260 290)))
-	(if (ywRectContain rect (yeveMouseX) (yeveMouseY))
-	    (begin
-	      (repush_obj wid "choose-green" (ywCanvasNewRectangleByRect wid rect "rgba: 60 190 60 100"))
-	      (if (yevAnyMouseDown events) (goto_room wid (yeGet (yeGet (get_cur_room wid) "nexts") 2))))
+        (if (ywRectContain rect (yeveMouseX) (yeveMouseY))
+          (begin
+            (repush_obj wid "choose-green" (ywCanvasNewRectangleByRect wid rect "rgba: 60 190 60 100"))
+            (if (yevAnyMouseDown events) (goto_room wid (yeGet (yeGet (get_cur_room wid) "nexts") 2))))
+        )
 	    )
-	)
-      )
-
     )
+  )
 
   (define dead_enemy_action
     (lambda (wid events)
@@ -423,11 +436,13 @@
   (define tmst_action
     (lambda (wid events)
       (reprint_stats wid)
-      (if (and
-           (and (> (yeGetIntAt wid "cur_cooldown") (- NB_TURN_COOLDOWN 1))
+      (if
+        (and
+          (and
+            (and (> (yeGetIntAt wid "cur_cooldown") (- NB_TURN_COOLDOWN 1))
                 (yevAnyMouseDown events))
-           (ywRectContain (yeGet wid "clock-rect") (yeveMouseX) (yeveMouseY))
-           )
+            (ywRectContain (yeGet wid "clock-rect") (yeveMouseX) (yeveMouseY)))
+            (> STATE_PJ_DEAD (yeGetIntAt wid "state")))
           (begin
             (display "on clock")
             (yeReCreateInt STATE_RESET wid "state")
@@ -482,7 +497,7 @@
           (yePushBack wid (ywCanvasNewTextByStr wid 30 430 "") "atk-stat-txt")
           (yePushBack wid (ywCanvasNewTextByStr wid 30 460 "") "def-stat-txt")
           (yePushBack wid (ywCanvasNewTextByStr wid 30 490 "") "crit-stat-txt")
-          
+
           (ywCanvasSetStrColor (yeGet wid "action-txt") "rgba: 255 255 255 255")
           (ywCanvasSetStrColor (yeGet wid "hp-stat-txt") "rgba: 255 255 255 255")
           (ywCanvasSetStrColor (yeGet wid "atk-stat-txt") "rgba: 255 255 255 255")
