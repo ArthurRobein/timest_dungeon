@@ -24,7 +24,7 @@
       "h": 176
     },
     "stats": {
-      "maxhp": 300,
+      "maxhp": 3,
       "atk": 4,
       "def": 0,
       "%crit": 10
@@ -44,14 +44,14 @@
   "compas": {
     "type":"tresort",
     "stats": {
-      "hp": 35,
+      "maxhp": 35,
       "atk": 5,
       "def": 3,
       "%crit": 10
       },
     "obj": "compas"
   },
-  "second": {
+  "2nd": {
     "type":"enemy",
     "stats": {
       "maxhp": 100,
