@@ -108,19 +108,23 @@
     )
 
   (define init_room
-    (lambda (wid)
-      (yeForeach (yeGet wid "json")
-        (lambda (room _unused)
-          (yeReCreateInt
-          (yeGetIntAt (yeGet  room "stats") "maxhp")
-          (yeGet room "stats")
-          "hp")
-        )
-	)
-      (yeReCreateString "first" wid "cur_room")
+    (lambda (wid room_info)
+      (let (
+          (room (yeReCreateString room_info wid "cur_room"))
+          (x (get_sprite_pos wid (yeGetStringAt wid "cur_room") "x"))
+          (y (get_sprite_pos wid (yeGetStringAt wid "cur_room") "y"))
+          (w (get_sprite_pos wid (yeGetStringAt wid "cur_room") "w"))
+          (h (get_sprite_pos wid (yeGetStringAt wid "cur_room") "h"))
+      )
+      (display "INIT_ROOOM \n")
+      (ywCanvasRemoveObj wid (yeGet wid "monster"))
+      (yeReplaceBack wid (ywCanvasNewImg wid 550 (- 300 h)
+        (yeGetString(yeGet(yeGet(yeGet wid "json") (yeGetStringAt wid "cur_room")) "enemy-img"))
+        (ywRectCreate x y w h)) "monster")
       (yeReCreateInt STATE_PJ_ATK wid "state")
       (yeReCreateInt 0 wid "state-a")
       (yeReCreateInt 1 wid "cur_cooldown")
+      )
     )
   )
 
@@ -328,7 +332,7 @@
   (define goto_room
     (lambda (wid room_info)
       (yePrint room_info)
-      (yeReCreateString (yeGetStringAt room_info 0) wid "cur_room")
+      (init_room wid (yeGetStringAt room_info 0))
       (yeReCreateInt STATE_ENEMY_ATK wid "state")
 
       (yePrint (get_cur_room wid))
@@ -548,7 +552,7 @@
     (lambda (wid events)
       (display "reset_action\n")
       (add_reminiscence wid)
-      (init_room wid)
+      (init_room wid (yeGetStringAt wid "cur_room"))
       )
     )
 
@@ -606,22 +610,22 @@
       (let
         ((unused (yePushBack wid (ygFileToEnt YJSON "rooms.json") "json"))
           (first_room (yeReCreateString "first" wid "cur_room"))
-          (x (get_sprite_pos wid (yeGetStringAt wid "cur_room") "x"))
-          (y (get_sprite_pos wid (yeGetStringAt wid "cur_room") "y"))
-          (w (get_sprite_pos wid (yeGetStringAt wid "cur_room") "w"))
-          (h (get_sprite_pos wid (yeGetStringAt wid "cur_room") "h"))
           )
         (begin
           (display "Hello world\n")
           (ywSetTurnLengthOverwrite -1)
 	  (yeReCreateInt 0 wid "=timer")
           (yeCreateFunction "tmst_action_timer" wid "action")
-          (init_room wid)
+          (yeForeach (yeGet wid "json")
+            (lambda (room _unused)
+              (yeReCreateInt
+              (yeGetIntAt (yeGet  room "stats") "maxhp")
+              (yeGet room "stats")
+              "hp")
+            )
+          )
           (yeCreateInt 0 wid "reminiscence_number")
           (yePushBack wid (ywCanvasNewImg wid 0 0 "cave.jpg" (ywRectCreate 0 0 1000 1000)) "cave")
-          (yePushBack wid (ywCanvasNewImg wid 550 (- 300 h)
-                                          (yeGetString(yeGet(yeGet(yeGet wid "json") (yeGetStringAt wid "cur_room")) "enemy-img"))
-                                          (ywRectCreate x y w h)) "monster")
 
           (yePushBack wid (ywCanvasNewTextByStr wid 30 30 "") "dead-txt")
           (ywCanvasSetStrColor (yeGet wid "dead-txt") "rgba: 255 255 255 255")
@@ -644,6 +648,7 @@
           (yePushBack wid (ywCanvasNewTextByStr wid 290 20 "") "choose-txt-1")
           (yePushBack wid (ywCanvasNewTextByStr wid 560 20 "") "choose-txt-2")
 
+          (init_room wid "first")
           (ywRectCreate 350 400 100 100 wid "clock-rect")
           (yePushBack wid (ywCanvasNewImg wid 350 400
                                           "spritesheets/Clock.png"

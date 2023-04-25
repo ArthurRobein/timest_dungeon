@@ -1,7 +1,7 @@
 {
   "hero": {
     "stats": {
-      "maxhp": 4,
+      "maxhp": 20,
       "atk": 4,
       "def": 2,
       "%crit": 10
@@ -24,30 +24,44 @@
       "h": 176
     },
       "stats": {
-      "maxhp": 24,
+      "maxhp": 2,
       "atk": 4,
       "def": 4,
       "%crit": 10
       },
-      "nexts": [["compas", "obj"], ["2nd", "end"], ["loop", "trap"]]
+      "nexts": [["gnu", "enemy"], ["2nd", "end"], ["loop", "trap"]]
   },
   "loop": {
     "type":"enemy",
+    "enemy-img": "spritesheets/Monster.png",
     "stats": {
       "maxhp": 20,
       "atk": 6,
       "def": 2,
       "%crit": 10
       },
+    "sprite-pos": {
+      "x": 36,
+      "y": 6,
+      "w": 64,
+      "h": 84
+      },
     "nexts": [["loop", "trap"]]
   },
-  "compas": {
-    "type":"tresort",
+  "gnu": {
+    "type":"enemy",
+    "enemy-img": "spritesheets/Monster_gnu.png",
     "stats": {
-      "maxhp": 35,
-      "atk": 5,
-      "def": 3,
+      "maxhp": 20,
+      "atk": 6,
+      "def": 2,
       "%crit": 10
+      },
+    "sprite-pos": {
+      "x": 36,
+      "y": 6,
+      "w": 64,
+      "h": 84
       },
     "obj": "compas"
   },
