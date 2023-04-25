@@ -291,14 +291,14 @@
                 ))
           (if (= (yeGetIntAt wid "state") STATE_PJ_ATK)
               (begin
-                (ywCanvasStringSet (yeGet wid "action-txt") (yeCreateString "the guy attack !!"))
+                (ywCanvasStringSet (yeGet wid "action-txt") (yeCreateString "Hero attack !!"))
                 (ywCanvasRemoveObj wid (yeGet wid "hero"))
                 (yeReplaceBack wid (ywCanvasNewImg wid 200 230 "spritesheets/Hero_attack.png" (ywRectCreate 225 18 88 68)) "hero")
                 (reminiscence_attack wid 0 STATE_PJ_ATK)
                 ))
           (if (= (yeGetIntAt wid "state") STATE_PJ_END_ATK)
               (begin
-                (ywCanvasStringSet (yeGet wid "action-txt") (yeStringAddInt (yeCreateString "the guy deal ")
+                (ywCanvasStringSet (yeGet wid "action-txt") (yeStringAddInt (yeCreateString "The hero deals ")
                                                                             (yeGetIntAt wid "dmg-deal")))
                 (ywCanvasRemoveObj wid (yeGet wid "hero"))
                 (yeReplaceBack wid (ywCanvasNewImg wid 200 230 "spritesheets/Hero_idle.png" (ywRectCreate 26 22 43 63)) "hero")
@@ -306,13 +306,13 @@
                 ))
           (if (= (yeGetIntAt wid "state") STATE_ENEMY_ATK)
               (begin
-                (ywCanvasStringSet (yeGet wid "action-txt") (yeCreateString "bad guy attack !!!"))
+                (ywCanvasStringSet (yeGet wid "action-txt") (yeCreateString "Bad guy attack !!!"))
                 (ywCanvasRemoveObj wid (yeGet wid "hero"))
                 (ywCanvasMoveObjXY (yeGet wid "monster") -5 0)
                 (yeReplaceBack wid (ywCanvasNewImg wid 200 230 "spritesheets/Hero_hurt.png" (ywRectCreate 7 27 46 59)) "hero")))
           (if (= (yeGetIntAt wid "state") STATE_ENEMY_END_ATK)
               (begin
-                (ywCanvasStringSet (yeGet wid "action-txt") (yeStringAddInt (yeCreateString "bad guy deal ")
+                (ywCanvasStringSet (yeGet wid "action-txt") (yeStringAddInt (yeCreateString "The bad guy deals ")
                                                                             (yeGetIntAt wid "dmg-deal")))
                 (ywCanvasRemoveObj wid (yeGet wid "hero"))
                 (ywCanvasMoveObjXY (yeGet wid "monster") 5 0)
@@ -367,9 +367,8 @@
       (ywCanvasStringSet (yeGet wid "choose-txt-2") (yeCreateString "YOU WIN"))
       (ywCanvasSetStrColor (yeGet wid "choose-txt-2") "rgba: 255 255 255 255")
       (ywCanvasMoveObjXY (yeGet wid "choose-txt-2") 0 3)
-
-      )
     )
+  )
 
   (define only_no_room
     (lambda (wid events)
@@ -512,16 +511,16 @@
 		(if (= rand 0)
 		    (begin (add_stat wid "hero" "maxhp" 5)
 			   (add_stat wid "hero" "hp" 5)
-			   (yeReCreateString "maxhp" wid "which-win")))
+			   (yeReCreateString "Gained more maxhp" wid "which-win")))
 		(if (= rand 1)
 		    (begin (add_stat wid "hero" "atk" 2)
-			   (yeReCreateString "atk" wid "which-win")))
+			   (yeReCreateString "Gained more atk" wid "which-win")))
 		(if (= rand 2)
 		    (begin (add_stat wid "hero" "def" 1)
-			   (yeReCreateString "def" wid "which-win")))
+			   (yeReCreateString "Gained more def" wid "which-win")))
 		(if (= rand 3)
 		    (begin (add_stat wid "hero" "%crit" 5)
-			   (yeReCreateString "%crit" wid "which-win")))
+			   (yeReCreateString "Gained more %crit" wid "which-win")))
 		)
 	      )
 	  (if (< new_win 30)
@@ -532,7 +531,7 @@
 			    (ywCanvasNewRectangle wid 0 0 800 300 "rgba: 230 230 230 200"))
 		(repush_obj wid "win-text"
 			    (ywCanvasNewText wid 350 30
-					     (yeStringAdd (yeCreateString "Ta ta ta ta, tatatata ta ta\nYOU WIN\n") (yeGetStringAt wid "which-win"))
+					     (yeStringAdd (yeCreateString "Ta ta ta ta, tatatata ta ta\nENEMY SLAIN\n") (yeGetStringAt wid "which-win"))
 					     )
 			    )
 		)
