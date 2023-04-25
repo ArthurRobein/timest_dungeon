@@ -132,6 +132,7 @@
       (repush_obj wid "cave" (ywCanvasNewImg wid 0 0(yeGetString (yeGet (get_cur_room wid) "back-img"))
         (ywRectCreate 100 0 1000 1000)))
       (repush_obj wid "clock" (ywCanvasNewImg wid 350 400 "spritesheets/Clock.png" (ywRectCreate 0 0 100 100)))
+      (repush_obj wid "hrect" (ywCanvasNewHSegment wid 0 350 1000 "rgba: 0 0 0 255"))
       (ywCanvasRemoveObj wid (yeGet wid "monster"))
       (yeReplaceBack wid (ywCanvasNewImg wid 550 (- 300 h)
         (yeGetString (yeGet (get_cur_room wid) "enemy-img"))
