@@ -9,7 +9,7 @@
   },
   "first": {
     "type":"enemy",
-    "back-img": "wall.png",
+    "back-img": "cave.jpg",
     "enemy-img": "spritesheets/GreenMonster.png",
     "sprite-pos": {
       "x": 194,
@@ -27,6 +27,7 @@
   },
   "loop": {
     "type":"enemy",
+    "back-img": "cave.jpg",
     "enemy-img": "spritesheets/Monster_hero.png",
     "stats": {
       "maxhp": 20,
@@ -44,11 +45,12 @@
   },
   "gnu": {
     "type":"enemy",
+    "back-img": "cave.jpg",
     "enemy-img": "spritesheets/Monster_gnu.png",
     "stats": {
-      "maxhp": 20,
+      "maxhp": 10,
       "atk": 6,
-      "def": 2,
+      "def": 3,
       "%crit": 10
       },
     "sprite-pos": {
@@ -61,11 +63,12 @@
   },
   "2nd": {
     "type":"enemy",
+    "back-img": "cave.jpg",
     "enemy-img": "spritesheets/Monster_mage.png",
     "stats": {
-      "maxhp": 100,
-      "atk": 4,
-      "def": 6,
+      "maxhp": 30,
+      "atk": 5,
+      "def": 2,
       "%crit": 10
       },
       "sprite-pos": {
@@ -78,6 +81,7 @@
   },
   "the end": {
     "type":"enemy",
+    "back-img": "cave.jpg",
     "enemy-img": "spritesheets/Monster_head.png",
     "sprite-pos": {
       "x": 0,
@@ -86,7 +90,7 @@
       "h": 88
       },
     "stats": {
-      "maxhp": 50,
+      "maxhp": 40,
       "atk": 8,
       "def": 3,
       "%crit": 10

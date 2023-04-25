@@ -124,6 +124,10 @@
           "hp")
         )
 		  )
+      (repush_obj wid "cave" (ywCanvasNewImg wid 0 0 
+        (yeGetString(yeGet(yeGet(yeGet wid "json") (yeGetStringAt wid "cur_room")) "back-img"))
+        (ywRectCreate 0 0 1000 1000)))
+      (repush_obj wid "clock" (ywCanvasNewImg wid 350 400 "spritesheets/Clock.png" (ywRectCreate 0 0 100 100)))
       (display "INIT_ROOOM \n")
       (ywCanvasRemoveObj wid (yeGet wid "monster"))
       (yeReplaceBack wid (ywCanvasNewImg wid 550 (- 300 h)
@@ -633,7 +637,6 @@
             )
           )
           (yeCreateInt 0 wid "reminiscence_number")
-          (yePushBack wid (ywCanvasNewImg wid 0 0 "cave.jpg" (ywRectCreate 0 0 1000 1000)) "cave")
 
           (yePushBack wid (ywCanvasNewTextByStr wid 30 30 "") "dead-txt")
           (ywCanvasSetStrColor (yeGet wid "dead-txt") "rgba: 255 255 255 255")
@@ -658,9 +661,6 @@
 
           (init_room wid "first")
           (ywRectCreate 350 400 100 100 wid "clock-rect")
-          (yePushBack wid (ywCanvasNewImg wid 350 400
-                                          "spritesheets/Clock.png"
-                                          (ywRectCreate 0 0 100 100)) "clock")
           (yePushBack wid (ywCanvasNewImg wid 200 230 "spritesheets/Hero_idle.png" (ywRectCreate 26 22 43 63)) "hero")
           (ywCanvasNewHSegment wid 0 300 1000 "rgba: 0 0 0 255")
           (yeCreateInt 1 wid "have_weight")
