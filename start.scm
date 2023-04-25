@@ -559,6 +559,7 @@
     (lambda (wid events)
       (display "reset_action\n")
       (add_reminiscence wid)
+      (yeReCreateString "first" wid "cur_room")
       (init_room wid (yeGetStringAt wid "cur_room"))
       )
     )

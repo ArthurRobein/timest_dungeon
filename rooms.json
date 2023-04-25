@@ -23,11 +23,11 @@
       "def": 2,
       "%crit": 10
       },
-      "nexts": [["gnu", "end"], ["2nd", "end"], ["loop", "trap"]]
+      "nexts": [["gnu", "enemy"], ["2nd", "enemy"], ["loop", "Mirror"]]
   },
   "loop": {
     "type":"enemy",
-    "enemy-img": "spritesheets/Monster_mage.png",
+    "enemy-img": "spritesheets/Monster_hero.png",
     "stats": {
       "maxhp": 20,
       "atk": 6,
@@ -35,10 +35,10 @@
       "%crit": 10
       },
     "sprite-pos": {
-      "x": 5,
-      "y": 0,
-      "w": 45,
-      "h": 51
+      "x": 361,
+      "y": 22,
+      "w": 43,
+      "h": 63
       },
     "nexts": [["loop", "trap"]]
   },
@@ -61,12 +61,19 @@
   },
   "2nd": {
     "type":"enemy",
+    "enemy-img": "spritesheets/Monster_mage.png",
     "stats": {
       "maxhp": 100,
       "atk": 4,
       "def": 6,
       "%crit": 10
       },
+      "sprite-pos": {
+        "x": 5,
+        "y": 0,
+        "w": 45,
+        "h": 51
+        },
     "nexts": [["the end", "boss"]]
   },
   "the end": {
