@@ -23,7 +23,7 @@
       "def": 2,
       "%crit": 10
       },
-      "nexts": [["gnu", "enemy"], ["2nd", "end"], ["loop", "trap"]]
+      "nexts": [["gnu", "end"], ["2nd", "end"], ["loop", "trap"]]
   },
   "loop": {
     "type":"enemy",
@@ -57,7 +57,7 @@
       "w": 64,
       "h": 84
       },
-    "obj": "compas"
+      "nexts": [["the end", "trap"]]
   },
   "2nd": {
     "type":"enemy",
