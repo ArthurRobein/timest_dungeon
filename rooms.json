@@ -1,9 +1,9 @@
 {
   "hero": {
     "stats": {
-      "maxhp": 20,
+      "maxhp": 10,
       "atk": 4,
-      "def": 2,
+      "def": 1,
       "%crit": 10
       }
   },
@@ -17,23 +17,17 @@
       "w": 171,
       "h": 176
     },
-    "attack-sprite-pos": {
-      "x": 194,
-      "y": 198,
-      "w": 171,
-      "h": 176
-    },
       "stats": {
-      "maxhp": 2,
+      "maxhp": 12,
       "atk": 4,
-      "def": 4,
+      "def": 2,
       "%crit": 10
       },
       "nexts": [["gnu", "enemy"], ["2nd", "end"], ["loop", "trap"]]
   },
   "loop": {
     "type":"enemy",
-    "enemy-img": "spritesheets/Monster.png",
+    "enemy-img": "spritesheets/Monster_mage.png",
     "stats": {
       "maxhp": 20,
       "atk": 6,
@@ -41,10 +35,10 @@
       "%crit": 10
       },
     "sprite-pos": {
-      "x": 36,
-      "y": 6,
-      "w": 64,
-      "h": 84
+      "x": 5,
+      "y": 0,
+      "w": 45,
+      "h": 51
       },
     "nexts": [["loop", "trap"]]
   },
@@ -77,10 +71,17 @@
   },
   "the end": {
     "type":"enemy",
+    "enemy-img": "spritesheets/Monster_head.png",
+    "sprite-pos": {
+      "x": 0,
+      "y": 0,
+      "w": 57,
+      "h": 88
+      },
     "stats": {
-      "maxhp": 200,
-      "atk": 35,
-      "def": 30,
+      "maxhp": 50,
+      "atk": 8,
+      "def": 3,
       "%crit": 10
       },
     "the end": true
