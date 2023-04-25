@@ -33,6 +33,10 @@
       (ywCanvasStringSet (yeGet wid "atk-stat-txt") (yeStringAddInt (yeCreateString "Attack: ") (get_stat wid "hero" "atk")))
       (ywCanvasStringSet (yeGet wid "def-stat-txt") (yeStringAddInt (yeCreateString "Defense: ") (get_stat wid "hero" "def")))
       (ywCanvasStringSet (yeGet wid "crit-stat-txt") (yeStringAddInt (yeCreateString "Crit rate: ") (get_stat wid "hero" "%crit")))
+      (ywCanvasSetWeight wid (yeGet wid "hp-stat-txt") 5)
+      (ywCanvasSetWeight wid (yeGet wid "atk-stat-txt") 5)
+      (ywCanvasSetWeight wid (yeGet wid "def-stat-txt") 5)
+      (ywCanvasSetWeight wid (yeGet wid "crit-stat-txt") 5)
       )
     )
 
@@ -124,10 +128,11 @@
           "hp")
         )
 		  )
-      (repush_obj wid "cave" (ywCanvasNewImg wid 0 0 
+      (repush_obj wid "cave" (ywCanvasNewImg wid 0 0
         (yeGetString(yeGet(yeGet(yeGet wid "json") (yeGetStringAt wid "cur_room")) "back-img"))
         (ywRectCreate 0 0 1000 1000)))
       (repush_obj wid "clock" (ywCanvasNewImg wid 350 400 "spritesheets/Clock.png" (ywRectCreate 0 0 100 100)))
+      (repush_obj wid "hrect" (ywCanvasNewHSegment wid 0 300 1000 "rgba: 0 0 0 255"))
       (display "INIT_ROOOM \n")
       (ywCanvasRemoveObj wid (yeGet wid "monster"))
       (yeReplaceBack wid (ywCanvasNewImg wid 550 (- 300 h)
@@ -347,6 +352,7 @@
                 (ywCanvasRemoveObj wid (yeGet wid "hero"))
                 (ywCanvasMoveObjXY (yeGet wid "monster") 5 0)
                 (yeReplaceBack wid (ywCanvasNewImg wid 200 230 "spritesheets/Hero_idle.png" (ywRectCreate 26 22 43 63)) "hero")))
+	  (ywCanvasSetWeight wid (yeGet wid "action-txt") 5)
 
           (hero_hp_bar wid)
           (monster_hp_bar wid)
@@ -361,6 +367,9 @@
       (begin
         (ywCanvasStringSet (yeGet wid "dead-txt") (yeCreateString "DEAD !!!! !!"))
         (ywCanvasStringSet (yeGet wid "action-txt") (yeCreateString ""))
+	(ywCanvasSetWeight wid (yeGet wid "dead-txt") 5)
+	(ywCanvasSetWeight wid (yeGet wid "action-txt") 5)
+
         (ywCanvasRemoveObj wid (yeGet wid "hero"))
         (yeReplaceBack wid (ywCanvasNewImg wid 200 248 "spritesheets/Hero_dead.png" (ywRectCreate 98 41 47 45)) "hero")
         )
@@ -688,7 +697,6 @@
           (init_room wid "first")
           (ywRectCreate 350 400 100 100 wid "clock-rect")
           (yePushBack wid (ywCanvasNewImg wid 200 230 "spritesheets/Hero_idle.png" (ywRectCreate 26 22 43 63)) "hero")
-          (ywCanvasNewHSegment wid 0 300 1000 "rgba: 0 0 0 255")
           (yeCreateInt 1 wid "have_weight")
           (ywidNewWidget (yaeString "rgba: 255 255 255 255" wid "background") "canvas")
           )
