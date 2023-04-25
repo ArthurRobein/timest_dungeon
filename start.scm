@@ -33,6 +33,10 @@
       (ywCanvasStringSet (yeGet wid "atk-stat-txt") (yeStringAddInt (yeCreateString "Attack: ") (get_stat wid "hero" "atk")))
       (ywCanvasStringSet (yeGet wid "def-stat-txt") (yeStringAddInt (yeCreateString "Defense: ") (get_stat wid "hero" "def")))
       (ywCanvasStringSet (yeGet wid "crit-stat-txt") (yeStringAddInt (yeCreateString "Crit rate: ") (get_stat wid "hero" "%crit")))
+      (ywCanvasSetWeight wid (yeGet wid "hp-stat-txt") 5)
+      (ywCanvasSetWeight wid (yeGet wid "atk-stat-txt") 5)
+      (ywCanvasSetWeight wid (yeGet wid "def-stat-txt") 5)
+      (ywCanvasSetWeight wid (yeGet wid "crit-stat-txt") 5)
       )
     )
 
@@ -125,7 +129,7 @@
         )
 		  )
       (display "INIT_ROOOM \n")
-      (repush_obj wid "cave" (ywCanvasNewImg wid 0 0 (yeGetString (yeGet (get_cur_room wid) "back-img"))
+      (repush_obj wid "cave" (ywCanvasNewImg wid 0 0(yeGetString (yeGet (get_cur_room wid) "back-img"))
         (ywRectCreate 100 0 1000 1000)))
       (repush_obj wid "clock" (ywCanvasNewImg wid 350 400 "spritesheets/Clock.png" (ywRectCreate 0 0 100 100)))
       (ywCanvasRemoveObj wid (yeGet wid "monster"))
@@ -233,47 +237,73 @@
     )
   )
 
+  (define compute_dmg
+    (lambda (wid nb_remi attacker attacked)
+      (let
+	  (
+	   (hero_atk (get_stat wid attacker "atk"))
+	   (hero_crit (get_stat wid attacker "%crit"))
+	   (bad_def (get_stat wid attacked "def"))
+	   )
+	(if (< (modulo (yuiRand) 100) hero_crit)
+	    (begin
+	      (yeReCreateString " CRITIC !" wid "crit-txt")
+	      (* (- (+ hero_atk (* nb_remi hero_atk)) bad_def) 2)
+	      )
+	    (begin
+	      (yeReCreateString "" wid "crit-txt")
+	      (- (+ hero_atk (* nb_remi hero_atk)) bad_def)
+	      )
+	    )
+	)
+      )
+    )
+
   (define combat_action
     (lambda (wid events)
       (let (
             (maxhp (get_stat wid "hero" "maxhp"))
             (hp (get_stat wid "hero" "hp"))
-            (total_dmg (- (+ (get_stat wid "hero" "atk") (* (yeGetIntAt wid "reminiscence_number") (get_stat wid "hero" "atk")))
-              (get_stat wid (yeGetStringAt wid "cur_room") "def")))
             )
         (begin
+
           (if (= (yeGetIntAt wid "state-a") STATE_DMG_TIME)
-            (begin
-              (if (= (yeGetIntAt wid "state") STATE_PJ_ATK)
-                (begin
-                  (add_stat wid (yeGetStringAt wid "cur_room") "hp" (- total_dmg))
-                  (yeReCreateInt total_dmg wid "dmg-deal"))
-                )
-              (if (= (yeGetIntAt wid "state") STATE_ENEMY_ATK)
-                (let (
-                  (rand (modulo (yuiRand) (yeGetIntAt wid "reminiscence_number")))
-                  (enemy_dmg (- (get_stat wid (yeGetStringAt wid "cur_room") "atk")
-                        (get_stat wid "hero" "def")))
-                  )
-                  (if (= (yeGetIntAt wid "reminiscence_number") 0)
+              (begin
+                (if (= (yeGetIntAt wid "state") STATE_PJ_ATK)
                     (begin
-                      (add_stat wid "hero" "hp" (- enemy_dmg))
-                      (yeReCreateInt enemy_dmg wid "dmg-deal"))
-                    (begin
-                      (if (> rand 0)
-                        (begin
-                          (yeAddAt wid "reminiscence_number" -1)
-                          (ywCanvasRemoveObj wid
-                            (yeGet wid (yeGetString (yeStringAddInt (yeCreateString "remi") (yeGetIntAt wid "reminiscence_number"))))))
-                        (begin
-                          (add_stat wid "hero" "hp"  (- enemy_dmg))
-                          (yeReCreateInt enemy_dmg wid "dmg-deal")))
+                      (let (
+                            (total_dmg (compute_dmg wid (yeGetIntAt wid "reminiscence_number")
+                                                    "hero" (yeGetStringAt wid "cur_room")))
+                            )
+                        (add_stat wid (yeGetStringAt wid "cur_room") "hp" (- total_dmg))
+                        (yeReCreateInt total_dmg wid "dmg-deal")
+                        )
+                      )
                     )
-                  )
-                )
-              )
-            )
-          )
+		(if (= (yeGetIntAt wid "state") STATE_ENEMY_ATK)
+                    (let (
+                          (rand (modulo (yuiRand) (yeGetIntAt wid "reminiscence_number")))
+                          (enemy_dmg (compute_dmg wid 0 (yeGetStringAt wid "cur_room") "hero"))
+                          )
+                      (if (= (yeGetIntAt wid "reminiscence_number") 0)
+                          (begin
+                            (add_stat wid "hero" "hp" (- enemy_dmg))
+                            (yeReCreateInt enemy_dmg wid "dmg-deal"))
+                          (begin
+                            (if (> rand 0)
+				(begin
+                                  (yeAddAt wid "reminiscence_number" -1)
+                                  (ywCanvasRemoveObj wid
+                                                     (yeGet wid (yeGetString (yeStringAddInt (yeCreateString "remi") (yeGetIntAt wid "reminiscence_number"))))))
+				(begin
+                                  (add_stat wid "hero" "hp"  (- enemy_dmg))
+                                  (yeReCreateInt enemy_dmg wid "dmg-deal")))
+                            )
+                          )
+                      )
+                    )
+		)
+	      )
           (yeIncrAt wid "state-a")
           (yeIncrAt wid "cur_cooldown")
           (yeIntForceBound (yeGet wid "cur_cooldown") 0 NB_TURN_COOLDOWN)
@@ -301,8 +331,8 @@
                 ))
           (if (= (yeGetIntAt wid "state") STATE_PJ_END_ATK)
               (begin
-                (ywCanvasStringSet (yeGet wid "action-txt") (yeStringAddInt (yeCreateString "The hero deals ")
-                                                                            (yeGetIntAt wid "dmg-deal")))
+                (ywCanvasStringSet (yeGet wid "action-txt") (yeStringAdd (yeStringAddInt (yeCreateString "The hero deals ")
+                                                                            (yeGetIntAt wid "dmg-deal")) (yeGetStringAt wid "crit-txt")))
                 (ywCanvasRemoveObj wid (yeGet wid "hero"))
                 (yeReplaceBack wid (ywCanvasNewImg wid 200 230 "spritesheets/Hero_idle.png" (ywRectCreate 26 22 43 63)) "hero")
                 (reminiscence_attack wid 0 STATE_PJ_END_ATK)
@@ -315,11 +345,12 @@
                 (yeReplaceBack wid (ywCanvasNewImg wid 200 230 "spritesheets/Hero_hurt.png" (ywRectCreate 7 27 46 59)) "hero")))
           (if (= (yeGetIntAt wid "state") STATE_ENEMY_END_ATK)
               (begin
-                (ywCanvasStringSet (yeGet wid "action-txt") (yeStringAddInt (yeCreateString "The bad guy deals ")
-                                                                            (yeGetIntAt wid "dmg-deal")))
+                (ywCanvasStringSet (yeGet wid "action-txt") (yeStringAdd (yeStringAddInt (yeCreateString "The bad guy deals ")
+                                                                            (yeGetIntAt wid "dmg-deal")) (yeGetStringAt wid "crit-txt")))
                 (ywCanvasRemoveObj wid (yeGet wid "hero"))
                 (ywCanvasMoveObjXY (yeGet wid "monster") 5 0)
                 (yeReplaceBack wid (ywCanvasNewImg wid 200 230 "spritesheets/Hero_idle.png" (ywRectCreate 26 22 43 63)) "hero")))
+	  (ywCanvasSetWeight wid (yeGet wid "action-txt") 5)
 
           (hero_hp_bar wid)
           (monster_hp_bar wid)
@@ -334,6 +365,9 @@
       (begin
         (ywCanvasStringSet (yeGet wid "dead-txt") (yeCreateString "DEAD !!!! !!"))
         (ywCanvasStringSet (yeGet wid "action-txt") (yeCreateString ""))
+	(ywCanvasSetWeight wid (yeGet wid "dead-txt") 5)
+	(ywCanvasSetWeight wid (yeGet wid "action-txt") 5)
+
         (ywCanvasRemoveObj wid (yeGet wid "hero"))
         (yeReplaceBack wid (ywCanvasNewImg wid 200 248 "spritesheets/Hero_dead.png" (ywRectCreate 98 41 47 45)) "hero")
         )
@@ -659,7 +693,6 @@
           (init_room wid "first")
           (ywRectCreate 350 400 100 100 wid "clock-rect")
           (yePushBack wid (ywCanvasNewImg wid 200 230 "spritesheets/Hero_idle.png" (ywRectCreate 26 22 43 63)) "hero")
-          (ywCanvasNewHSegment wid 0 300 1000 "rgba: 0 0 0 255")
           (yeCreateInt 1 wid "have_weight")
           (ywidNewWidget (yaeString "rgba: 255 255 255 255" wid "background") "canvas")
           )
