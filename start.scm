@@ -124,14 +124,13 @@
           "hp")
         )
 		  )
-      (repush_obj wid "cave" (ywCanvasNewImg wid 0 0 
-        (yeGetString(yeGet(yeGet(yeGet wid "json") (yeGetStringAt wid "cur_room")) "back-img"))
-        (ywRectCreate 0 0 1000 1000)))
-      (repush_obj wid "clock" (ywCanvasNewImg wid 350 400 "spritesheets/Clock.png" (ywRectCreate 0 0 100 100)))
       (display "INIT_ROOOM \n")
+      (repush_obj wid "cave" (ywCanvasNewImg wid 0 0 (yeGetString (yeGet (get_cur_room wid) "back-img"))
+        (ywRectCreate 100 0 1000 1000)))
+      (repush_obj wid "clock" (ywCanvasNewImg wid 350 400 "spritesheets/Clock.png" (ywRectCreate 0 0 100 100)))
       (ywCanvasRemoveObj wid (yeGet wid "monster"))
       (yeReplaceBack wid (ywCanvasNewImg wid 550 (- 300 h)
-        (yeGetString(yeGet(yeGet(yeGet wid "json") (yeGetStringAt wid "cur_room")) "enemy-img"))
+        (yeGetString (yeGet (get_cur_room wid) "enemy-img"))
         (ywRectCreate x y w h)) "monster")
       (yeReCreateInt STATE_PJ_ATK wid "state")
       (yeReCreateInt 0 wid "state-a")
@@ -641,7 +640,6 @@
           (yePushBack wid (ywCanvasNewTextByStr wid 30 30 "") "dead-txt")
           (ywCanvasSetStrColor (yeGet wid "dead-txt") "rgba: 255 255 255 255")
           (yePushBack wid (ywCanvasNewRectangle wid 20 390 200 170 "rgba: 0 0 0 100") "stat-background")
-
           (yePushBack wid (ywCanvasNewTextByStr wid 30 20 "") "action-txt")
           (yePushBack wid (ywCanvasNewTextByStr wid 30 400 "") "hp-stat-txt")
           (yePushBack wid (ywCanvasNewTextByStr wid 30 430 "") "atk-stat-txt")
@@ -653,7 +651,6 @@
           (ywCanvasSetStrColor (yeGet wid "atk-stat-txt") "rgba: 255 255 255 255")
           (ywCanvasSetStrColor (yeGet wid "def-stat-txt") "rgba: 255 255 255 255")
           (ywCanvasSetStrColor (yeGet wid "crit-stat-txt") "rgba: 255 255 255 255")
-
 
           (yePushBack wid (ywCanvasNewTextByStr wid 20 20 "") "choose-txt-0")
           (yePushBack wid (ywCanvasNewTextByStr wid 290 20 "") "choose-txt-1")
