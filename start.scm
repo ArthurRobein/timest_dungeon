@@ -198,11 +198,13 @@
       (let (
             (x (modulo (yuiRand) 200))
             (y (modulo (yuiRand) 100))
+	    (remi_str (yeGetString (yeStringAddInt (yeCreateString "remi") (yeGetIntAt wid "reminiscence_number"))))
             )
         (begin
           (yeReplaceBack wid (ywCanvasNewImg wid (+ 100 x) (+ 100 y) "spritesheets/Remi_idle.png"
-            (ywRectCreate 26 22 43 63))
-            (yeGetString (yeStringAddInt (yeCreateString "remi") (yeGetIntAt wid "reminiscence_number"))))
+					     (ywRectCreate 26 22 43 63))
+			 remi_str)
+	  (ywCanvasSetWeight wid (yeGet wid remi_str) 5)
           (yeIncrAt wid "reminiscence_number")
           )
         )
@@ -378,6 +380,7 @@
     (lambda (wid room_info)
       (yePrint room_info)
       (init_room wid (yeGetStringAt room_info 0))
+      (ywCanvasSetWeight wid (yeGet wid "cave") -5)
       (yeReCreateInt STATE_ENEMY_ATK wid "state")
 
       (yePrint (get_cur_room wid))

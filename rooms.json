@@ -41,7 +41,7 @@
       "w": 43,
       "h": 63
       },
-    "nexts": [["loop", "trap"]]
+    "nexts": [["loop", "Mirror"]]
   },
   "gnu": {
     "type":"enemy",
