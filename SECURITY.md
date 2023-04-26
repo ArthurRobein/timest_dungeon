@@ -3,7 +3,7 @@
 
 ## Reporting a Vulnerability
 
-Create an issue, and send me a mail.
+Create an issue, or send me a mail.
 if the security issue concerning the engine, it's very important to start by.
 
 ```rust
