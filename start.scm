@@ -370,9 +370,13 @@
         (ywCanvasStringSet (yeGet wid "action-txt") (yeCreateString ""))
 	(ywCanvasSetWeight wid (yeGet wid "dead-txt") 5)
 	(ywCanvasSetWeight wid (yeGet wid "action-txt") 5)
+	(yeIncrAt wid "dead-cnt")
 
         (ywCanvasRemoveObj wid (yeGet wid "hero"))
         (yeReplaceBack wid (ywCanvasNewImg wid 200 248 "spritesheets/Hero_dead.png" (ywRectCreate 98 41 47 45)) "hero")
+	(if (and (> (yeGetIntAt wid "dead-cnt") 29)
+		 (yeIsChild wid "quit"))
+	    (yesCall (yeGet wid "quit") wid))
         )
       )
     )
@@ -408,8 +412,12 @@
       (ywCanvasStringSet (yeGet wid "choose-txt-2") (yeCreateString "YOU WIN"))
       (ywCanvasSetStrColor (yeGet wid "choose-txt-2") "rgba: 255 255 255 255")
       (ywCanvasMoveObjXY (yeGet wid "choose-txt-2") 0 3)
+      (yeIncrAt wid "dead-cnt")
+      (if (and (> (yeGetIntAt wid "dead-cnt") 29)
+	       (yeIsChild wid "win"))
+	  (yesCall (yeGet wid "win") wid))
+      )
     )
-  )
 
   (define only_no_room
     (lambda (wid events)
@@ -610,7 +618,7 @@
       (reprint_stats wid)
       (if (and
       (and
-              (or
+       (or
         (and (ywRectContain (yeGet wid "clock-rect") (yeveMouseX) (yeveMouseY))
                     (yevAnyMouseDown events))
         (yevIsKeyDown events Y_R_KEY)
@@ -689,6 +697,8 @@
           (ywCanvasSetStrColor (yeGet wid "atk-stat-txt") "rgba: 255 255 255 255")
           (ywCanvasSetStrColor (yeGet wid "def-stat-txt") "rgba: 255 255 255 255")
           (ywCanvasSetStrColor (yeGet wid "crit-stat-txt") "rgba: 255 255 255 255")
+	  ;(yePushBack wid (ygGet "FinishGame") "quit")
+	  ;(yePushBack wid (ygGet "FinishGame") "win")
 
           (yePushBack wid (ywCanvasNewTextByStr wid 20 20 "") "choose-txt-0")
           (yePushBack wid (ywCanvasNewTextByStr wid 290 20 "") "choose-txt-1")
@@ -698,6 +708,7 @@
           (ywRectCreate 350 400 100 100 wid "clock-rect")
           (yePushBack wid (ywCanvasNewImg wid 200 230 "spritesheets/Hero_idle.png" (ywRectCreate 26 22 43 63)) "hero")
           (yeCreateInt 1 wid "have_weight")
+          (yeCreateInt 0 wid "dead-cnt")
           (ywidNewWidget (yaeString "rgba: 255 255 255 255" wid "background") "canvas")
           )
         )
