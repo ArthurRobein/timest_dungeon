@@ -119,6 +119,8 @@
           (y (get_sprite_pos wid (yeGetStringAt wid "cur_room") "y"))
           (w (get_sprite_pos wid (yeGetStringAt wid "cur_room") "w"))
           (h (get_sprite_pos wid (yeGetStringAt wid "cur_room") "h"))
+	  (is_force_size (yeIsChild (get_cur_room wid) "force-size"))
+	  (h_forced (ywSizeH (yeGet (get_cur_room wid) "force-size")))
       )
       (yeForeach (yeGet wid "json")
       (lambda (room _unused)
@@ -131,12 +133,20 @@
       (display "INIT_ROOOM \n")
       (repush_obj wid "cave" (ywCanvasNewImg wid 0 0(yeGetString (yeGet (get_cur_room wid) "back-img"))
         (ywRectCreate 100 0 1000 1000)))
-      (repush_obj wid "clock" (ywCanvasNewImg wid 350 400 "spritesheets/Clock.png" (ywRectCreate 0 0 100 100)))
+      (repush_obj wid "clock" (ywCanvasNewImg wid 375 400 "spritesheets/Clock.png" (ywRectCreate 0 0 100 100)))
+      (ywCanvasForceSizeXY (yeGet wid "clock") 100 100)
+
       (repush_obj wid "hrect" (ywCanvasNewHSegment wid 0 350 1000 "rgba: 0 0 0 255"))
       (ywCanvasRemoveObj wid (yeGet wid "monster"))
-      (yeReplaceBack wid (ywCanvasNewImg wid 550 (- 300 h)
-        (yeGetString (yeGet (get_cur_room wid) "enemy-img"))
-        (ywRectCreate x y w h)) "monster")
+      (yeReplaceBack
+       wid
+       (ywCanvasNewImg wid 550
+		       (if is_force_size (- 300 h_forced) (- 300 h))
+		       (yeGetString (yeGet (get_cur_room wid) "enemy-img"))
+		       (ywRectCreate x y w h)) "monster")
+      (if is_force_size
+	  (ywCanvasForceSize (yeGet wid "monster") (yeGet (get_cur_room wid) "force-size")))
+      (if (yeIsChild (get_cur_room wid) "sprite-flip") (ywCanvasHFlip (yeGet wid "monster")))
       (yeReCreateInt STATE_PJ_ATK wid "state")
       (yeReCreateInt 0 wid "state-a")
       (yeReCreateInt 1 wid "cur_cooldown")

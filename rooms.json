@@ -10,13 +10,15 @@
   "first": {
     "type":"enemy",
     "back-img": "spritesheets/Cave_first.png",
-    "enemy-img": "spritesheets/GreenMonster.png",
+    "enemy-img": "spritesheets/knight_silver.png",
     "sprite-pos": {
-      "x": 194,
-      "y": 198,
-      "w": 171,
-      "h": 176
+      "x": 0,
+      "y": 0,
+      "w": 537,
+      "h": 576
     },
+      "force-size": [100, 100],
+      "sprite-flip": true,
       "stats": {
       "maxhp": 12,
       "atk": 4,
@@ -72,11 +74,12 @@
       "%crit": 10
       },
       "sprite-pos": {
-        "x": 5,
-        "y": 0,
-        "w": 45,
-        "h": 51
-        },
+        "x": 0,
+        "y": 5,
+        "w": 32,
+        "h": 48
+      },
+      "sprite-flip": true,
     "nexts": [["the end", "boss"]]
   },
   "the end": {
@@ -85,9 +88,9 @@
     "enemy-img": "spritesheets/Monster_head.png",
     "sprite-pos": {
       "x": 0,
-      "y": 0,
-      "w": 57,
-      "h": 88
+      "y": 192,
+      "w": 64,
+      "h": 64
       },
     "stats": {
       "maxhp": 40,
