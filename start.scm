@@ -123,14 +123,16 @@
 	  (h_forced (ywSizeH (yeGet (get_cur_room wid) "force-size")))
       )
       (yeForeach (yeGet wid "json")
-      (lambda (room _unused)
-        (yeReCreateInt
-          (yeGetIntAt (yeGet room "stats") "maxhp")
-          (yeGet room "stats")
-          "hp")
-        )
-		  )
+		 (lambda (room _unused)
+		   (yeReCreateInt
+		    (yeGetIntAt (yeGet room "stats") "maxhp")
+		    (yeGet room "stats")
+		    "hp")
+		   )
+		 )
+
       (display "INIT_ROOOM \n")
+      (ygModDir "timest_dungeon")
       (repush_obj wid "cave" (ywCanvasNewImg wid 0 0(yeGetString (yeGet (get_cur_room wid) "back-img"))
         (ywRectCreate 100 0 1000 1000)))
       (repush_obj wid "clock" (ywCanvasNewImg wid 375 400 "spritesheets/Clock.png" (ywRectCreate 0 0 100 100)))
@@ -150,6 +152,7 @@
       (yeReCreateInt STATE_PJ_ATK wid "state")
       (yeReCreateInt 0 wid "state-a")
       (yeReCreateInt 1 wid "cur_cooldown")
+      (ygModDirOut)
       )
     )
   )
@@ -163,8 +166,6 @@
                                                (round (/ (* (yeGetIntAt wid "cur_cooldown") 100) NB_TURN_COOLDOWN)
                                                       ) 8 "rgba: 0 55 233 255")
                      "cool_bar_front")
-      (display (/ 100
-                  (/ (yeGetIntAt wid "cur_cooldown") NB_TURN_COOLDOWN)))
       )
     )
 
@@ -335,6 +336,7 @@
 		      )
 		    )
                 ))
+	  (ygModDir "timest_dungeon")
           (if (= (yeGetIntAt wid "state") STATE_PJ_ATK)
               (begin
                 (ywCanvasStringSet (yeGet wid "action-txt") (yeCreateString "Hero attack !!"))
@@ -364,6 +366,7 @@
                 (ywCanvasMoveObjXY (yeGet wid "monster") 5 0)
                 (yeReplaceBack wid (ywCanvasNewImg wid 200 230 "spritesheets/Hero_idle.png" (ywRectCreate 26 22 43 63)) "hero")))
 	  (ywCanvasSetWeight wid (yeGet wid "action-txt") 5)
+	  (ygModDirOut)
 
           (hero_hp_bar wid)
           (monster_hp_bar wid)
@@ -383,7 +386,9 @@
 	(yeIncrAt wid "dead-cnt")
 
         (ywCanvasRemoveObj wid (yeGet wid "hero"))
+	(ygModDir "timest_dungeon")
         (yeReplaceBack wid (ywCanvasNewImg wid 200 248 "spritesheets/Hero_dead.png" (ywRectCreate 98 41 47 45)) "hero")
+	(ygModDirOut)
 	(if (and (> (yeGetIntAt wid "dead-cnt") 29)
 		 (yeIsChild wid "quit"))
 	    (yesCall (yeGet wid "quit") wid))
@@ -602,7 +607,7 @@
 			(if (= 1 next_l) (only_1_room wid events)
 			    (if (= 2 next_l) (choose_2_rooms wid events)
 				(if (= 0 next_l) (only_no_room wid events)
-				    (display "odd number of ROOM !!!!"))
+				    (display "odd number of ROOM !!!!\n"))
 				)
 			    )
 			)
@@ -638,11 +643,10 @@
       (> STATE_PJ_DEAD (yeGetIntAt wid "state"))
       )
           (begin
-            (display "on clock")
+            (display "on clock\n")
             (yeReCreateInt STATE_RESET wid "state")
             )
           )
-
       (if (= (yeGetIntAt wid "state") STATE_PJ_DEAD)
           (dead_action wid events)
           (if (= (yeGetIntAt wid "state") STATE_ENEMY_DEAD)
@@ -675,7 +679,9 @@
   (define tmst_init
     (lambda (wid unues_type)
       (let
-        ((unused (yePushBack wid (ygFileToEnt YJSON "rooms.json") "json"))
+          (
+	   (unused2 (ygModDir "timest_dungeon"))
+	   (unused (yePushBack wid (ygFileToEnt YJSON "rooms.json") "json"))
           (first_room (yeReCreateString "first" wid "cur_room"))
           )
         (begin
@@ -717,6 +723,7 @@
           (init_room wid "first")
           (ywRectCreate 350 400 100 100 wid "clock-rect")
           (yePushBack wid (ywCanvasNewImg wid 200 230 "spritesheets/Hero_idle.png" (ywRectCreate 26 22 43 63)) "hero")
+	  (ygModDirOut)
           (yeCreateInt 1 wid "have_weight")
           (yeCreateInt 0 wid "dead-cnt")
           (ywidNewWidget (yaeString "rgba: 255 255 255 255" wid "background") "canvas")
