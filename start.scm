@@ -213,9 +213,11 @@
 	    (remi_str (yeGetString (yeStringAddInt (yeCreateString "remi") (yeGetIntAt wid "reminiscence_number"))))
             )
         (begin
+	  (ygModDir "timest_dungeon")
           (yeReplaceBack wid (ywCanvasNewImg wid (+ 100 x) (+ 100 y) "spritesheets/Remi_idle.png"
 					     (ywRectCreate 26 22 43 63))
 			 remi_str)
+	  (ygModDirOut)
 	  (ywCanvasSetWeight wid (yeGet wid remi_str) 5)
           (yeIncrAt wid "reminiscence_number")
           )
@@ -235,8 +237,10 @@
               (begin
               (display "PJ ATK\n")
               (ywCanvasRemoveObj wid (yeGet wid (yeGetString (yeStringAddInt (yeCreateString "remi") num))))
+	      (ygModDir "timest_dungeon")
               (yeReplaceBack wid (ywCanvasNewImg wid remi_x remi_y "spritesheets/Remi_attack.png" (ywRectCreate 225 18 88 68))
-                (yeGetString (yeStringAddInt (yeCreateString "remi") num)))
+			     (yeGetString (yeStringAddInt (yeCreateString "remi") num)))
+	      (ygModDirOut)
             ))
             (if (= state STATE_PJ_END_ATK)
               (begin
@@ -682,7 +686,7 @@
           (
 	   (unused2 (ygModDir "timest_dungeon"))
 	   (unused (yePushBack wid (ygFileToEnt YJSON "rooms.json") "json"))
-          (first_room (yeReCreateString "first" wid "cur_room"))
+           (first_room (yeReCreateString "first" wid "cur_room"))
           )
         (begin
           (display "Hello world\n")
@@ -722,6 +726,7 @@
 
           (init_room wid "first")
           (ywRectCreate 350 400 100 100 wid "clock-rect")
+	  (ygModDir "timest_dungeon") ; init_room go out
           (yePushBack wid (ywCanvasNewImg wid 200 230 "spritesheets/Hero_idle.png" (ywRectCreate 26 22 43 63)) "hero")
 	  (ygModDirOut)
           (yeCreateInt 1 wid "have_weight")
