@@ -7,4 +7,4 @@ playable [here](https://harald8.itch.io/timest-dungeon)
 
 # contribution
 
-Contribution are welcom, you can euther open an issue, or a PR 
+Contributions are welcom, you can open an issue, or a PR 
