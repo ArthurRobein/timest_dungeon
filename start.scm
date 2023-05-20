@@ -45,6 +45,7 @@
       (begin
         (display "timest_dungeon INIT \n\n")
         (ywSizeCreate 800 600 mod "window size")
+	(ygAddModule Y_MOD_LOCAL mod "./stop-screen")
         (ygInitWidgetModule mod "timest_dungeon" (yeCreateFunction "tmst_init"))
         mod
         )
@@ -709,7 +710,15 @@
           (yePushBack wid (ywCanvasNewImg wid 200 230 "spritesheets/Hero_idle.png" (ywRectCreate 26 22 43 63)) "hero")
           (yeCreateInt 1 wid "have_weight")
           (yeCreateInt 0 wid "dead-cnt")
-          (ywidNewWidget (yaeString "rgba: 255 255 255 255" wid "background") "canvas")
+          (let (
+		(ret
+		 (ywidNewWidget (yaeString "rgba: 255 255 255 255" wid "background") "canvas"))
+		)
+	    (begin
+	      (y_stop_helper wid 380 350 "that's the reset clock\nyou can click it")
+	      ret
+	      )
+	    )
           )
         )
       )
